@@ -13,25 +13,40 @@ async function fetchAndCleanData() {
   try {
     console.log('⏳ 開始從 PvPoke 獲取最新 gamemaster.json...');
     
-    // 透過原生 fetch 下載 JSON
     const response = await fetch(PVPOKE_URL);
     if (!response.ok) {
       throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
     }
     
     const rawData = await response.json();
-    console.log('✅ 成功獲取原始資料，開始清洗...');
+    console.log('✅ 成功獲取原始資料，開始處理招式屬性映射...');
 
-    // 精準萃取需要的欄位，剔除對戰數值以減輕前端負擔
+    // 建立招式對應屬性的字典 (Dictionary)
+    const moveTypeMap = new Map();
+    if (rawData.moves) {
+      rawData.moves.forEach(move => {
+        // PvPoke 的 move 物件包含 moveId (如 VINE_WHIP) 與 type (如 grass)
+        moveTypeMap.set(move.moveId, move.type);
+      });
+    }
+
+    // 輔助函式：將招式字串轉換為帶有屬性的物件
+    const mapMove = (moveId) => ({
+      name: moveId,
+      type: moveTypeMap.get(moveId) || 'normal' // 若無對應屬性預設為 normal
+    });
+
+    console.log('✅ 開始清洗寶可夢資料並綁定招式屬性...');
+    // 精準萃取需要的欄位，並將招式轉換為物件結構
     const cleanedPokemon = rawData.pokemon
-      .filter(p => p.dex !== undefined) // 過濾掉沒有圖鑑編號的無效資料
+      .filter(p => p.dex !== undefined) 
       .map(p => ({
         dex: p.dex,
         speciesId: p.speciesId,
         speciesName: p.speciesName,
-        types: p.types || [], // API 回傳的屬性皆為小寫英文，例如 ["grass", "poison"]
-        fastMoves: p.fastMoves || [],
-        chargedMoves: p.chargedMoves || []
+        types: p.types || [], 
+        fastMoves: (p.fastMoves || []).map(mapMove),
+        chargedMoves: (p.chargedMoves || []).map(mapMove)
       }));
 
     // 確保 public 資料夾存在
@@ -40,7 +55,7 @@ async function fetchAndCleanData() {
       fs.mkdirSync(publicDir, { recursive: true });
     }
 
-    // 將瘦身後的結果寫入 public/pokemon-data.json
+    // 將瘦身且升級後的結果寫入 public/pokemon-data.json
     fs.writeFileSync(OUTPUT_PATH, JSON.stringify(cleanedPokemon, null, 2));
     
     console.log(`🎉 清洗完成！共擷取了 ${cleanedPokemon.length} 筆寶可夢形態資料。`);
@@ -48,7 +63,7 @@ async function fetchAndCleanData() {
 
   } catch (error) {
     console.error('❌ 獲取或清洗資料失敗:', error.message);
-    process.exit(1); // 讓 CI/CD 知道執行失敗
+    process.exit(1); 
   }
 }
 
