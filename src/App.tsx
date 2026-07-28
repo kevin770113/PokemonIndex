@@ -23,7 +23,6 @@ const App: React.FC = () => {
         ? prev.filter(t => t !== type) 
         : (prev.length < 2 ? [...prev, type] : prev);
       
-      // 更換防守方屬性時，自動重置搜尋狀態
       setTierResults([]);
       setHasSearched(false);
       return newTypes;
@@ -42,7 +41,10 @@ const App: React.FC = () => {
   );
 
   const handleSearchAttackers = async () => {
-    if (selectedTypes.length === 0) return;
+    if (selectedTypes.length === 0) {
+      alert("請先上方選擇至少一個防守方屬性！");
+      return;
+    }
     
     setIsSearching(true);
     setHasSearched(true);
@@ -97,20 +99,18 @@ const App: React.FC = () => {
           <h2 className="text-xl font-bold mb-4">防守弱點與抗性分析</h2>
           <ResultSection results={effectivenessResults} />
           
-          {/* 修正點：明確將搜尋按鈕與結果清單掛載在畫面上 */}
-          {selectedTypes.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-              <button
-                onClick={handleSearchAttackers}
-                disabled={isSearching}
-                className={`w-full sm:w-auto px-8 py-3 rounded-xl font-bold text-white shadow-md transition-all ${
-                  isSearching ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:scale-95'
-                }`}
-              >
-                {isSearching ? '🔍 搜尋與運算中...' : '🔍 搜尋最佳打手 (T0~T10)'}
-              </button>
-            </div>
-          )}
+          {/* 修改點：讓搜尋按鈕常駐顯示，不再受限於 selectedTypes.length > 0 */}
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+            <button
+              onClick={handleSearchAttackers}
+              disabled={isSearching}
+              className={`w-full sm:w-auto px-8 py-3 rounded-xl font-bold text-white shadow-md transition-all ${
+                isSearching ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:scale-95'
+              }`}
+            >
+              {isSearching ? '🔍 搜尋與運算中...' : '🔍 搜尋最佳打手 (T0~T10)'}
+            </button>
+          </div>
 
           {hasSearched && !isSearching && tierResults.length === 0 && (
             <div className="mt-6 text-center text-gray-400 py-6 border-2 border-dashed border-gray-200 rounded-xl">
