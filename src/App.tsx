@@ -47,12 +47,10 @@ const App: React.FC = () => {
     setIsSearching(true);
     setHasSearched(true);
     try {
-      // 點擊後才去載入 JSON，節省初次網頁載入資源
       const response = await fetch('/pokemon-data.json');
       if (!response.ok) throw new Error('Network response was not ok');
       const allPokemon: PokemonData[] = await response.json();
       
-      // 執行核心分級演算法
       const results = searchBestAttackers(allPokemon, selectedTypes);
       setTierResults(results);
     } catch (error) {
@@ -99,7 +97,7 @@ const App: React.FC = () => {
           <h2 className="text-xl font-bold mb-4">防守弱點與抗性分析</h2>
           <ResultSection results={effectivenessResults} />
           
-          {/* 搜尋打手按鈕區塊 */}
+          {/* 修正點：明確將搜尋按鈕與結果清單掛載在畫面上 */}
           {selectedTypes.length > 0 && (
             <div className="mt-8 pt-6 border-t border-gray-100 text-center">
               <button
@@ -114,14 +112,12 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {/* 無符合名單提示 */}
           {hasSearched && !isSearching && tierResults.length === 0 && (
             <div className="mt-6 text-center text-gray-400 py-6 border-2 border-dashed border-gray-200 rounded-xl">
               沒有符合 T0 ~ T10 條件的最佳打手。
             </div>
           )}
           
-          {/* 渲染 T0~T10 名單 */}
           <PokemonSearchList tierGroups={tierResults} isLoading={isSearching} />
         </section>
 
