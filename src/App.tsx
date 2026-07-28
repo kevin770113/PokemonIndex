@@ -3,11 +3,15 @@ import { PokemonType } from './types/pokemon';
 import { TypeSelector } from './components/TypeSelector';
 import { ResultSection } from './components/ResultSection';
 import { calculateEffectiveness } from './utils/typeCalculator';
+import { usePWA } from './hooks/usePWA';
+import { UpdateToast } from './components/UpdateToast';
 
 const App: React.FC = () => {
   const [selectedTypes, setSelectedTypes] = useState<PokemonType[]>([]);
+  
+  // 載入 PWA 更新狀態勾子
+  const { needRefresh, setNeedRefresh, updateServiceWorker } = usePWA();
 
-  // 處理屬性點擊邏輯：已選則移除，未選且未滿兩個則加入
   const handleToggleType = (type: PokemonType) => {
     setSelectedTypes(prev => {
       if (prev.includes(type)) {
@@ -24,14 +28,13 @@ const App: React.FC = () => {
     setSelectedTypes([]);
   };
 
-  // 只有當 selectedTypes 改變時，才重新執行計算
   const effectivenessResults = useMemo(
     () => calculateEffectiveness(selectedTypes),
     [selectedTypes]
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 p-4 sm:p-8 font-sans">
+    <div className="min-h-screen bg-gray-50 text-gray-800 p-4 sm:p-8 font-sans relative">
       <div className="max-w-3xl mx-auto space-y-8">
         
         <header className="text-center">
@@ -68,6 +71,13 @@ const App: React.FC = () => {
         </section>
 
       </div>
+
+      {/* 將 PWA 更新提示掛載在最上層 */}
+      <UpdateToast 
+        needRefresh={needRefresh} 
+        updateServiceWorker={updateServiceWorker} 
+        closeToast={() => setNeedRefresh(false)} 
+      />
     </div>
   );
 };
