@@ -8,6 +8,7 @@ import { searchBestAttackers, TierGroup } from './utils/searchAlgorithm';
 import { usePWA } from './hooks/usePWA';
 import { UpdateToast } from './components/UpdateToast';
 import { PokemonSearchList } from './components/PokemonSearchList';
+import { initTranslator } from './utils/translator'; // 【新增引入翻譯引擎初始化】
 
 const App: React.FC = () => {
   const [selectedTypes, setSelectedTypes] = useState<PokemonType[]>([]);
@@ -49,15 +50,20 @@ const App: React.FC = () => {
     setIsSearching(true);
     setHasSearched(true);
     try {
-      const response = await fetch('/pokemon-data.json');
-      if (!response.ok) throw new Error('Network response was not ok');
-      const allPokemon: PokemonData[] = await response.json();
+      // 【修改點】平行發送兩個請求：同時抓取寶可夢資料與翻譯字典
+      const [pokemonResponse, _] = await Promise.all([
+        fetch('/pokemon-data.json'),
+        initTranslator()
+      ]);
+
+      if (!pokemonResponse.ok) throw new Error('Network response was not ok');
+      const allPokemon: PokemonData[] = await pokemonResponse.json();
       
       const results = searchBestAttackers(allPokemon, selectedTypes);
       setTierResults(results);
     } catch (error) {
-      console.error("無法載入寶可夢資料:", error);
-      alert("資料載入失敗，請確認是否已透過 GitHub Actions 產生 pokemon-data.json。");
+      console.error("無法載入資料:", error);
+      alert("資料載入失敗，請確認資料檔案是否存在。");
     } finally {
       setIsSearching(false);
     }
@@ -99,7 +105,6 @@ const App: React.FC = () => {
           <h2 className="text-xl font-bold mb-4">防守弱點與抗性分析</h2>
           <ResultSection results={effectivenessResults} />
           
-          {/* 修改點：讓搜尋按鈕常駐顯示，不再受限於 selectedTypes.length > 0 */}
           <div className="mt-8 pt-6 border-t border-gray-100 text-center">
             <button
               onClick={handleSearchAttackers}
