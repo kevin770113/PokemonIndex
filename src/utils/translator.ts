@@ -1,16 +1,34 @@
-import { POKEMON_NAMES } from '../constants/pokemonNames';
-import { MOVE_NAMES } from '../constants/moveNames';
-
 // 定義儲存在 LocalStorage 的 Key 前綴
 const LOCAL_STORAGE_PREFIX = {
   POKEMON: 'custom_pokemon_name_',
   MOVE: 'custom_move_name_'
 };
 
+// 記憶體中的翻譯字典快取
+let translationCache: { pokemon: Record<string, string>, moves: Record<string, string> } = {
+  pokemon: {},
+  moves: {}
+};
+
+/**
+ * 初始化翻譯字典：由外部非同步呼叫載入 public/translations.json
+ */
+export const initTranslator = async () => {
+  // 如果已經載入過，就不重複載入，節省網路資源
+  if (Object.keys(translationCache.pokemon).length > 0) return;
+
+  try {
+    const response = await fetch('/translations.json');
+    if (response.ok) {
+      translationCache = await response.json();
+    }
+  } catch (error) {
+    console.error("無法載入翻譯檔案 translations.json:", error);
+  }
+};
+
 /**
  * 防呆備用機制：將底線轉換為空格，並將每個單字首字母大寫
- * 例如：'charizard_mega_x' -> 'Charizard Mega X'
- * 例如：'VINE_WHIP' -> 'Vine Whip'
  */
 const formatFallbackName = (id: string): string => {
   if (!id) return '';
@@ -24,14 +42,12 @@ const formatFallbackName = (id: string): string => {
  * 取得寶可夢中文名稱
  */
 export const getPokemonName = (id: string): string => {
-  // 1. 檢查 LocalStorage 是否有手動校正紀錄
   const customName = localStorage.getItem(`${LOCAL_STORAGE_PREFIX.POKEMON}${id}`);
   if (customName) return customName;
 
-  // 2. 檢查靜態字典
-  if (POKEMON_NAMES[id]) return POKEMON_NAMES[id];
+  // 從快取中的 JSON 找翻譯
+  if (translationCache.pokemon[id]) return translationCache.pokemon[id];
 
-  // 3. 防呆降級回傳格式化英文
   return formatFallbackName(id);
 };
 
@@ -39,14 +55,12 @@ export const getPokemonName = (id: string): string => {
  * 取得招式中文名稱
  */
 export const getMoveName = (id: string): string => {
-  // 1. 檢查 LocalStorage 是否有手動校正紀錄
   const customName = localStorage.getItem(`${LOCAL_STORAGE_PREFIX.MOVE}${id}`);
   if (customName) return customName;
 
-  // 2. 檢查靜態字典
-  if (MOVE_NAMES[id]) return MOVE_NAMES[id];
+  // 從快取中的 JSON 找翻譯
+  if (translationCache.moves[id]) return translationCache.moves[id];
 
-  // 3. 防呆降級回傳格式化英文
   return formatFallbackName(id);
 };
 
@@ -57,10 +71,8 @@ export const saveCustomTranslation = (type: 'pokemon' | 'move', id: string, newN
   const prefix = type === 'pokemon' ? LOCAL_STORAGE_PREFIX.POKEMON : LOCAL_STORAGE_PREFIX.MOVE;
   
   if (!newName.trim()) {
-    // 如果輸入空白，代表清除自訂翻譯，恢復預設
     localStorage.removeItem(`${prefix}${id}`);
   } else {
-    // 儲存新的自訂翻譯
     localStorage.setItem(`${prefix}${id}`, newName.trim());
   }
 };
