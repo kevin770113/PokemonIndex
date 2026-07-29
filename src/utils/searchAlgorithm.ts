@@ -4,6 +4,7 @@ import { PokemonData } from '../types/database';
 
 export interface SearchResult extends PokemonData {
   bestAtkType: PokemonType | null;
+  bestAtkMoveId: string | null; // 【修正補上】為了給前端翻譯招式名稱
   atkMultiplier: number;
   defMultiplier: number;
 }
@@ -14,21 +15,16 @@ export interface TierGroup {
   pokemonList: SearchResult[];
 }
 
-// 輔助函式：將 PvPoke 的小寫屬性轉換為系統內的大寫開頭格式 (例如 'grass' -> 'Grass')
 const formatType = (typeStr: string): PokemonType => {
-  if (!typeStr || typeStr === 'none') return 'Normal'; // 預設防呆
+  if (!typeStr || typeStr === 'none') return 'Normal';
   return (typeStr.charAt(0).toUpperCase() + typeStr.slice(1).toLowerCase()) as PokemonType;
 };
 
-// 輔助函式：判定是否落在特定倍率區間 (解決浮點數精度問題)
 const isCloseTo = (value: number, target: number) => Math.abs(value - target) < 0.1;
 const isLessThan025 = (value: number) => value < 0.3;
 const is039 = (value: number) => value > 0.3 && value < 0.5;
 const is0625 = (value: number) => value > 0.5 && value < 0.8;
 
-/**
- * 嚴格比對 6813.png 的 T0 ~ T10 分級表
- */
 const getTier = (atk: number, def: number): { tier: string, label: string } | null => {
   const isAtk256 = atk > 2.5;
   const isAtk16 = atk > 1.5 && atk < 2.5;
@@ -53,26 +49,23 @@ const getTier = (atk: number, def: number): { tier: string, label: string } | nu
   if (isAtk1 && defIs0625) return { tier: 'T9', label: '攻擊 1x / 抵抗 0.625x' };
   if (isAtk1 && defIs1) return { tier: 'T10', label: '攻擊 1x / 抵抗 1x' };
 
-  return null; // 不符合上述嚴格條件則直接剔除
+  return null; 
 };
 
-/**
- * 核心演算法：搜尋並分級最佳打手
- */
 export const searchBestAttackers = (
   allPokemon: PokemonData[], 
   defenderTypes: PokemonType[]
 ): TierGroup[] => {
   if (defenderTypes.length === 0 || allPokemon.length === 0) return [];
 
-  // 初始化 T0~T10 容器
   const tierMap = new Map<string, TierGroup>();
   const tierOrder = ['T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10'];
   
   allPokemon.forEach(pokemon => {
-    // 1. 攻擊面運算：找出該寶可夢所有招式中，打在防守方身上最痛的那一招
     let bestAtkMultiplier = 0;
     let bestAtkType: PokemonType | null = null;
+    let bestAtkMoveId: string | null = null; // 【修正補上】
+    
     const allMoves = [...pokemon.fastMoves, ...pokemon.chargedMoves];
 
     allMoves.forEach(move => {
@@ -87,10 +80,10 @@ export const searchBestAttackers = (
       if (multiplier > bestAtkMultiplier) {
         bestAtkMultiplier = multiplier;
         bestAtkType = moveType;
+        bestAtkMoveId = move.name; // 【修正補上】記錄最高傷害的招式 ID
       }
     });
 
-    // 2. 防禦面運算 (最差情境)：防守方用自身屬性打回來，算出最痛的受擊倍率
     let worstDefMultiplier = 0;
     defenderTypes.forEach(enemyAtkType => {
       let multiplier = 1.0;
@@ -105,10 +98,8 @@ export const searchBestAttackers = (
       }
     });
 
-    // 3. 判定級別
     const tierInfo = getTier(bestAtkMultiplier, worstDefMultiplier);
     
-    // 如果符合 T0~T10 任何一級，就塞進對應的陣列中
     if (tierInfo) {
       if (!tierMap.has(tierInfo.tier)) {
         tierMap.set(tierInfo.tier, {
@@ -121,17 +112,16 @@ export const searchBestAttackers = (
       tierMap.get(tierInfo.tier)!.pokemonList.push({
         ...pokemon,
         bestAtkType,
+        bestAtkMoveId, // 【修正補上】
         atkMultiplier: bestAtkMultiplier,
         defMultiplier: worstDefMultiplier
       });
     }
   });
 
-  // 將 Map 轉為陣列，並確保按照 T0 到 T10 的順序排列，剔除空的級別
   const finalResults: TierGroup[] = [];
   tierOrder.forEach(tierKey => {
     if (tierMap.has(tierKey)) {
-      // 可選：將同級別內的寶可夢稍微按圖鑑編號或名稱排序，讓畫面更整齊
       const group = tierMap.get(tierKey)!;
       group.pokemonList.sort((a, b) => a.dex - b.dex);
       finalResults.push(group);
