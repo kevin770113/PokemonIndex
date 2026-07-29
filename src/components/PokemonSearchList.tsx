@@ -1,43 +1,49 @@
 import React from 'react';
-import { TierGroup } from '../utils/searchAlgorithm';
-import { PokemonCard } from './PokemonCard';
+import { SearchResult } from '../utils/searchAlgorithm';
+import { TYPE_NAMES } from '../types/pokemon';
+import { getPokemonName, getMoveName } from '../utils/translator';
 
-interface PokemonSearchListProps {
-  tierGroups: TierGroup[];
-  isLoading: boolean;
+interface PokemonListItemProps {
+  pokemon: SearchResult;
 }
 
-export const PokemonSearchList: React.FC<PokemonSearchListProps> = ({ tierGroups, isLoading }) => {
-  if (isLoading) {
-    return <div className="text-center text-gray-500 py-10">資料載入與運算中...</div>;
-  }
-
-  if (tierGroups.length === 0) {
-    return null;
-  }
+export const PokemonListItem: React.FC<PokemonListItemProps> = ({ pokemon }) => {
+  // 透過翻譯引擎取得中文，若無則會自動降級為排版整齊的英文
+  const zhName = getPokemonName(pokemon.speciesId);
+  const enName = pokemon.speciesName; 
+  const dexNum = `#${pokemon.dex.toString().padStart(3, '0')}`;
+  
+  const zhMove = pokemon.bestAtkMoveId ? getMoveName(pokemon.bestAtkMoveId) : '無招式';
+  
+  // 處理招式英文排版 (例如 BLAST_BURN -> Blast Burn)
+  const enMove = pokemon.bestAtkMoveId 
+    ? pokemon.bestAtkMoveId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+    : '';
 
   return (
-    <div className="space-y-6 mt-6">
-      {tierGroups.map((group) => {
-        // 防呆機制：如果該級別陣列為空，則直接不渲染該區塊
-        if (group.pokemonList.length === 0) return null;
+    <div className="flex justify-between items-center p-4 bg-white border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
+      
+      {/* 左側：寶可夢身分區 (主標題為中文，副標題為編號與英文) */}
+      <div className="flex flex-col max-w-[50%]">
+        <span className="text-lg font-bold text-gray-900 truncate">{zhName}</span>
+        <span className="text-xs font-medium text-gray-500 mt-0.5 truncate">
+          {dexNum} {enName}
+        </span>
+      </div>
 
-        return (
-          <div key={group.tier} className="bg-gray-50 p-4 rounded-2xl border border-gray-200">
-            <div className="mb-4 border-b border-gray-200 pb-2">
-              <h3 className="text-lg font-bold text-gray-800">
-                {group.tier} <span className="text-sm font-normal text-gray-500 ml-2">({group.label})</span>
-              </h3>
-            </div>
-            {/* 手機顯示 3 欄，平板以上 4~5 欄 */}
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-              {group.pokemonList.map((pokemon, index) => (
-                <PokemonCard key={`${pokemon.dex}-${index}`} pokemon={pokemon} />
-              ))}
-            </div>
-          </div>
-        );
-      })}
+      {/* 右側：招式與屬性徽章區 */}
+      <div className="flex flex-col items-end max-w-[50%]">
+        <span className="text-md font-bold text-gray-800 truncate">{zhMove}</span>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-[10px] text-gray-400 font-medium truncate">{enMove}</span>
+          {pokemon.bestAtkType && (
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded text-white bg-type-${pokemon.bestAtkType.toLowerCase()} shrink-0`}>
+              {TYPE_NAMES[pokemon.bestAtkType]}
+            </span>
+          )}
+        </div>
+      </div>
+      
     </div>
   );
 };
