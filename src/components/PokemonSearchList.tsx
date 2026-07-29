@@ -1,49 +1,69 @@
-import React from 'react';
-import { SearchResult } from '../utils/searchAlgorithm';
-import { TYPE_NAMES } from '../types/pokemon';
-import { getPokemonName, getMoveName } from '../utils/translator';
+import React, { useState } from 'react';
+import { TierGroup } from '../utils/searchAlgorithm';
+import { PokemonListItem } from './PokemonListItem';
 
-interface PokemonListItemProps {
-  pokemon: SearchResult;
+interface PokemonSearchListProps {
+  tierGroups: TierGroup[];
+  isLoading: boolean;
 }
 
-export const PokemonListItem: React.FC<PokemonListItemProps> = ({ pokemon }) => {
-  // 透過翻譯引擎取得中文，若無則會自動降級為排版整齊的英文
-  const zhName = getPokemonName(pokemon.speciesId);
-  const enName = pokemon.speciesName; 
-  const dexNum = `#${pokemon.dex.toString().padStart(3, '0')}`;
+// 抽出單一級別區塊的元件，獨立管理「展開/收起」的狀態防呆
+const TierSection: React.FC<{ group: TierGroup }> = ({ group }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const PAGING_SIZE = 5;
+  const totalCount = group.pokemonList.length;
+  const isOverLimit = totalCount > PAGING_SIZE;
   
-  const zhMove = pokemon.bestAtkMoveId ? getMoveName(pokemon.bestAtkMoveId) : '無招式';
-  
-  // 處理招式英文排版 (例如 BLAST_BURN -> Blast Burn)
-  const enMove = pokemon.bestAtkMoveId 
-    ? pokemon.bestAtkMoveId.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
-    : '';
+  // 決定畫面上要顯示哪些名單
+  const displayList = isExpanded ? group.pokemonList : group.pokemonList.slice(0, PAGING_SIZE);
+  const remainingCount = totalCount - PAGING_SIZE;
 
   return (
-    <div className="flex justify-between items-center p-4 bg-white border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
       
-      {/* 左側：寶可夢身分區 (主標題為中文，副標題為編號與英文) */}
-      <div className="flex flex-col max-w-[50%]">
-        <span className="text-lg font-bold text-gray-900 truncate">{zhName}</span>
-        <span className="text-xs font-medium text-gray-500 mt-0.5 truncate">
-          {dexNum} {enName}
-        </span>
+      {/* 標題列 */}
+      <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+        <h3 className="text-lg font-bold text-gray-800">
+          {group.tier} <span className="text-sm font-normal text-gray-500 ml-2">({group.label})</span>
+        </h3>
+      </div>
+      
+      {/* 全寬度雙語列表區塊 */}
+      <div className="flex flex-col">
+        {displayList.map((pokemon, index) => (
+          <PokemonListItem key={`${pokemon.dex}-${index}`} pokemon={pokemon} />
+        ))}
       </div>
 
-      {/* 右側：招式與屬性徽章區 */}
-      <div className="flex flex-col items-end max-w-[50%]">
-        <span className="text-md font-bold text-gray-800 truncate">{zhMove}</span>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-[10px] text-gray-400 font-medium truncate">{enMove}</span>
-          {pokemon.bestAtkType && (
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded text-white bg-type-${pokemon.bestAtkType.toLowerCase()} shrink-0`}>
-              {TYPE_NAMES[pokemon.bestAtkType]}
-            </span>
-          )}
-        </div>
-      </div>
-      
+      {/* 展開看更多按鈕 (若符合數量小於 5 則自動隱藏) */}
+      {isOverLimit && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full py-3 text-sm font-bold text-blue-600 bg-blue-50/30 hover:bg-blue-50 transition-colors border-t border-gray-100 active:bg-blue-100"
+        >
+          {isExpanded ? '收起名單 ▲' : `展開看更多符合名單 (還有 ${remainingCount} 隻) ▼`}
+        </button>
+      )}
+    </div>
+  );
+};
+
+export const PokemonSearchList: React.FC<PokemonSearchListProps> = ({ tierGroups, isLoading }) => {
+  if (isLoading) {
+    return <div className="text-center text-gray-500 py-10">資料載入與翻譯運算中...</div>;
+  }
+
+  if (tierGroups.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-6 mt-6">
+      {tierGroups.map((group) => {
+        // 級別陣列為空，直接不渲染該區塊
+        if (group.pokemonList.length === 0) return null;
+        return <TierSection key={group.tier} group={group} />;
+      })}
     </div>
   );
 };
