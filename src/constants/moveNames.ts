@@ -1,0 +1,37 @@
+export const MOVE_NAMES: Record<string, string> = {
+  // 常見小招 (Fast Moves)
+  "COUNTER": "雙倍奉還",
+  "DRAGON_BREATH": "龍息",
+  "SHADOW_CLAW": "暗影爪",
+  "VINE_WHIP": "藤鞭",
+  "MUD_SHOT": "泥巴射擊",
+  "SNARL": "大聲咆哮",
+  "CHARM": "撒嬌",
+  "LOCK_ON": "鎖定",
+  "WATER_FALL": "攀瀑",
+  "SMACK_DOWN": "擊落",
+  "INCINERATE": "燒盡",
+  "POISON_JAB": "毒擊",
+  "BULLET_PUNCH": "子彈拳",
+  "CONFUSION": "念力",
+
+  // 常見大招 (Charged Moves)
+  "BLAST_BURN": "爆炸烈焰",
+  "HYDRO_CANNON": "加農水炮",
+  "FRENZY_PLANT": "瘋狂植物",
+  "METEOR_MASH": "彗星拳",
+  "EARTHQUAKE": "地震",
+  "SHADOW_BALL": "暗影球",
+  "DRAGON_CLAW": "龍爪",
+  "STONE_EDGE": "尖石攻擊",
+  "AVALANCHE": "雪崩",
+  "WILD_CHARGE": "瘋狂伏特",
+  "BRAVE_BIRD": "勇鳥猛攻",
+  "CLOSE_COMBAT": "近身戰",
+  "ICICLE_SPEAR": "冰錐",
+  "ROCK_SLIDE": "岩崩",
+  "BODY_SLAM": "泰山壓頂",
+  "SUPERPOWER": "蠻力",
+  "FOCUS_BLAST": "真氣彈",
+  "OUTRAGE": "逆鱗"
+};
