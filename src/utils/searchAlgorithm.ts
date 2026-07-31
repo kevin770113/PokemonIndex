@@ -124,9 +124,7 @@ export const searchBestAttackers = (
   const validPokemonList: SearchResult[] = [];
   
   allPokemon.forEach(pokemon => {
-    // 靜態門檻保持不變，保留奇兵
     if ((pokemon.baseStats?.atk || 0) < 180) return;
-
     if (!options.includeShadow && pokemon.speciesId.includes('shadow')) return;
     if (!options.includeMega && pokemon.speciesId.includes('mega')) return;
 
@@ -190,10 +188,8 @@ export const searchBestAttackers = (
   // 全體統一依照 TTW 由快到慢排序
   validPokemonList.sort((a, b) => a.ttw - b.ttw);
 
-  // 取得全場第一名 (絕對 MVP)
+  // 取得全場第一名與平民第一名作為基準
   const absoluteBestTTW = validPokemonList[0].ttw;
-  
-  // 方案一：尋找非暗影、非 Mega 的「平民第一名」作為基準線。如果找不到，才退回用絕對第一名當基準。
   const regularBest = validPokemonList.find(p => !p.speciesId.includes('shadow') && !p.speciesId.includes('mega'));
   const benchmarkTTW = regularBest ? regularBest.ttw : absoluteBestTTW;
 
@@ -201,23 +197,35 @@ export const searchBestAttackers = (
     { tier: 'MVP', label: '極限通關首選', pokemonList: [] },
     { tier: 'S', label: '平民基準 10% 內 (頂級神手)', pokemonList: [] },
     { tier: 'A', label: '平民基準 10%~20% (卓越戰力)', pokemonList: [] },
-    { tier: 'B', label: '平民基準 20%~50% (優質備用)', pokemonList: [] }
+    { tier: 'B', label: '平民基準 20%~50% (優質戰力)', pokemonList: [] },
+    { tier: 'C', label: '候補名單 (為湊滿保底 50 隻)', pokemonList: [] }
   ];
 
-  validPokemonList.forEach(poke => {
-    // 只要是跟全場第一名一樣快，無條件進入 MVP 寶座
+  let totalAdded = 0;
+
+  for (const poke of validPokemonList) {
+    // 【絕對底線】：超過 1000 秒代表效率極差，直接停止收錄
+    if (poke.ttw > 1000) break;
+
     if (poke.ttw === absoluteBestTTW) {
       groups[0].pokemonList.push(poke);
-    } 
-    // 後續依照「平民基準」進行相對落後幅度過濾
-    else if (poke.ttw <= benchmarkTTW * 1.1) {
+      totalAdded++;
+    } else if (poke.ttw <= benchmarkTTW * 1.1) {
       groups[1].pokemonList.push(poke);
+      totalAdded++;
     } else if (poke.ttw <= benchmarkTTW * 1.2) {
       groups[2].pokemonList.push(poke);
+      totalAdded++;
     } else if (poke.ttw <= benchmarkTTW * 1.5) {
       groups[3].pokemonList.push(poke);
+      totalAdded++;
+    } else {
+      // 【保底機制】：落後超過 50%，只有在目前收錄不到 50 隻時才放行
+      if (totalAdded >= 50) break;
+      groups[4].pokemonList.push(poke);
+      totalAdded++;
     }
-  });
+  }
 
   return groups.filter(g => g.pokemonList.length > 0);
 };
