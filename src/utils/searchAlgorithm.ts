@@ -20,8 +20,8 @@ export interface SearchResult extends PokemonData {
   realDps: number; 
   ttf: number;     
   tdo: number;     
-  ttw: number;     // 總通關時間 (Time to Win)
-  deaths: number;  // 預估陣亡次數
+  ttw: number;
+  deaths: number;
 }
 
 export interface TierGroup {
@@ -33,32 +33,6 @@ export interface TierGroup {
 const formatType = (typeStr: string): PokemonType => {
   if (!typeStr || typeStr === 'none') return 'Normal';
   return (typeStr.charAt(0).toUpperCase() + typeStr.slice(1).toLowerCase()) as PokemonType;
-};
-
-const isCloseTo = (value: number, target: number) => Math.abs(value - target) < 0.1;
-const isLessThan025 = (value: number) => value < 0.3;
-const is039 = (value: number) => value > 0.3 && value < 0.5;
-const is0625 = (value: number) => value > 0.5 && value < 0.8;
-
-const getTier = (atk: number, def: number): { tier: string, label: string } | null => {
-  const isAtk256 = atk > 2.5;
-  const isAtk16 = atk > 1.5 && atk < 2.5;
-
-  const defIs025 = isLessThan025(def);
-  const defIs039 = is039(def);
-  const defIs0625 = is0625(def);
-  const defIs1 = isCloseTo(def, 1.0);
-
-  if (isAtk256 && defIs025) return { tier: 'T0', label: '攻擊 2.56x / 抵抗 <0.25x' };
-  if (isAtk256 && defIs039) return { tier: 'T1', label: '攻擊 2.56x / 抵抗 0.39x' };
-  if (isAtk256 && defIs0625) return { tier: 'T2', label: '攻擊 2.56x / 抵抗 0.625x' };
-  
-  if (isAtk16 && defIs025) return { tier: 'T3', label: '攻擊 1.6x / 抵抗 <0.25x' };
-  if (isAtk16 && defIs039) return { tier: 'T4', label: '攻擊 1.6x / 抵抗 0.39x' };
-  if (isAtk16 && defIs0625) return { tier: 'T5', label: '攻擊 1.6x / 抵抗 0.625x' };
-  if (isAtk16 && defIs1) return { tier: 'T6', label: '攻擊 1.6x / 抵抗 1x' };
-
-  return null; 
 };
 
 /**
@@ -128,11 +102,9 @@ const simulateCombat = (
   const ttf = Math.min(time, 300000) / 1000;
   const realDps = totalDamage === 0 ? 0.1 : (totalDamage / ttf);
   
-  // TTW 數學模型推導
   const BOSS_HP = 15000;
   const deaths = Math.max(0, Math.ceil(BOSS_HP / (totalDamage || 1)) - 1);
   const relobbies = Math.floor(deaths / 6);
-  // 總時間 = (打王時間) + (陣亡切換 2s) + (滅團進出 15s)
   const ttw = (BOSS_HP / realDps) + (deaths * 2) + (relobbies * 15);
 
   return { 
@@ -152,11 +124,12 @@ export const searchBestAttackers = (
 ): TierGroup[] => {
   if (defenderTypes.length === 0 || allPokemon.length === 0 || Object.keys(movesDict).length === 0) return [];
 
-  const tierMap = new Map<string, TierGroup>();
-  const tierOrder = ['T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6'];
+  const validPokemonList: SearchResult[] = [];
   
   allPokemon.forEach(pokemon => {
+    // 靜態門檻：基礎攻擊力斬殺線
     if ((pokemon.baseStats?.atk || 0) < 180) return;
+
     if (!options.includeShadow && pokemon.speciesId.includes('shadow')) return;
     if (!options.includeMega && pokemon.speciesId.includes('mega')) return;
 
@@ -190,6 +163,7 @@ export const searchBestAttackers = (
         });
         
         if (cMult > bestAtkMultForTier) bestAtkMultForTier = cMult;
+        // 如果連基本的克制都沒有，跳過
         if (cMult < 1.5) return;
 
         const simResult = simulateCombat(pokemon, fMove, cMove, defenderTypes, worstDefMultiplier);
@@ -207,15 +181,8 @@ export const searchBestAttackers = (
       });
     });
 
-    if (!bestCombo || bestAtkMultForTier < 1.5) return;
-
-    const tierInfo = getTier(bestAtkMultForTier, worstDefMultiplier);
-    if (tierInfo) {
-      if (!tierMap.has(tierInfo.tier)) {
-        tierMap.set(tierInfo.tier, { tier: tierInfo.tier, label: tierInfo.label, pokemonList: [] });
-      }
-      
-      tierMap.get(tierInfo.tier)!.pokemonList.push({
+    if (bestCombo && bestAtkMultForTier >= 1.5) {
+      validPokemonList.push({
         ...pokemon,
         ...bestCombo,
         defMultiplier: worstDefMultiplier
@@ -223,15 +190,34 @@ export const searchBestAttackers = (
     }
   });
 
-  const finalResults: TierGroup[] = [];
-  tierOrder.forEach(tierKey => {
-    if (tierMap.has(tierKey)) {
-      const group = tierMap.get(tierKey)!;
-      // 依據 TTW (總通關時間) 由小到大排序！
-      group.pokemonList.sort((a, b) => a.ttw - b.ttw);
-      finalResults.push(group);
+  if (validPokemonList.length === 0) return [];
+
+  // 全體統一依照 TTW 由快到慢排序
+  validPokemonList.sort((a, b) => a.ttw - b.ttw);
+
+  // 第一名即為 MVP 基準
+  const benchmarkTTW = validPokemonList[0].ttw;
+
+  const groups: TierGroup[] = [
+    { tier: 'MVP', label: '極限通關首選', pokemonList: [] },
+    { tier: 'S', label: '落後 10% 以內 (頂級神手)', pokemonList: [] },
+    { tier: 'A', label: '落後 10%~20% (卓越戰力)', pokemonList: [] },
+    { tier: 'B', label: '落後 20%~50% (優質備用)', pokemonList: [] }
+  ];
+
+  validPokemonList.forEach(poke => {
+    if (poke.ttw === benchmarkTTW) {
+      groups[0].pokemonList.push(poke);
+    } else if (poke.ttw <= benchmarkTTW * 1.1) {
+      groups[1].pokemonList.push(poke);
+    } else if (poke.ttw <= benchmarkTTW * 1.2) {
+      groups[2].pokemonList.push(poke);
+    } else if (poke.ttw <= benchmarkTTW * 1.5) {
+      groups[3].pokemonList.push(poke);
     }
+    // 大於 1.5 倍 (50%) 的寶可夢，直接丟棄不處理
   });
 
-  return finalResults;
+  // 只回傳有內容的群組
+  return groups.filter(g => g.pokemonList.length > 0);
 };
