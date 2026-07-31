@@ -13,13 +13,15 @@ export interface MoveData {
 
 export interface SearchResult extends PokemonData {
   bestAtkType: PokemonType | null;
-  bestAtkMoveId: string | null;   // 大招 ID
-  bestFastMoveId: string | null;  // 小招 ID
+  bestAtkMoveId: string | null;
+  bestFastMoveId: string | null;
   atkMultiplier: number;
   defMultiplier: number;
-  realDps: number; // 實戰模擬等效 DPS
-  ttf: number;     // 存活時間 (Time to Faint)
-  tdo: number;     // 總輸出傷害 (Total Damage Output)
+  realDps: number; 
+  ttf: number;     
+  tdo: number;     
+  ttw: number;     // 總通關時間 (Time to Win)
+  deaths: number;  // 預估陣亡次數
 }
 
 export interface TierGroup {
@@ -56,12 +58,11 @@ const getTier = (atk: number, def: number): { tier: string, label: string } | nu
   if (isAtk16 && defIs0625) return { tier: 'T5', label: '攻擊 1.6x / 抵抗 0.625x' };
   if (isAtk16 && defIs1) return { tier: 'T6', label: '攻擊 1.6x / 抵抗 1x' };
 
-  // 經過實戰模擬後，我們不再收錄 T7 以下（沒有攻擊加成）的平庸打手
   return null; 
 };
 
 /**
- * 核心：60 秒確定性時間軸模擬器
+ * 核心：300 秒 TTW 實戰通關模型
  */
 const simulateCombat = (
   pokemon: PokemonData,
@@ -78,7 +79,6 @@ const simulateCombat = (
     defenderTypes.forEach(defType => {
       effectMult *= (TYPE_CHART[moveType]?.[defType] ?? 1.0);
     });
-    // 傷害公式：Floor(0.5 * 威力 * (攻擊力/頭目防禦) * STAB * 屬性相剋) + 1。假設五星頭目防禦基準為 160。
     return Math.floor(0.5 * move.power * ((pokemon.baseStats?.atk || 100) / 160) * stabMult * effectMult) + 1;
   };
 
@@ -91,7 +91,6 @@ const simulateCombat = (
   const fTime = fastMove.cooldown || 500;
   const cTime = chargeMove.cooldown || 2000;
 
-  // 模擬頭目傷害：假設頭目基礎 DPS 為 15，並考量我方防禦力與抗性
   const incomingDps = 15 * (100 / (pokemon.baseStats?.def || 100)) * worstDefMultiplier;
 
   let hp = pokemon.baseStats?.hp || 100;
@@ -100,19 +99,16 @@ const simulateCombat = (
   let totalDamage = 0;
   let currentCooldown = 0;
 
-  const TICK = 500; // 每 0.5 秒跳動一次時間軸
+  const TICK = 500; 
 
-  while (hp > 0 && time < 60000) {
-    // 1. 承受頭目攻擊
+  while (hp > 0 && time < 300000) {
     const dmgTaken = incomingDps * (TICK / 1000);
     hp -= dmgTaken;
-    if (hp <= 0) break; // 若在半空中死亡，後續大招傷害不予計算 (嚴懲玻璃大砲)
+    if (hp <= 0) break; 
 
-    // 2. 受傷集氣機制 (1 HP = 0.5 Energy)
     energy += dmgTaken * 0.5;
     if (energy > 100) energy = 100;
 
-    // 3. 發動攻擊判定
     if (currentCooldown <= 0) {
       if (energy >= cEne) {
         energy -= cEne;
@@ -129,10 +125,23 @@ const simulateCombat = (
     time += TICK;
   }
 
-  const ttf = Math.min(time, 60000) / 1000;
-  const realDps = Number((totalDamage / ttf).toFixed(1));
+  const ttf = Math.min(time, 300000) / 1000;
+  const realDps = totalDamage === 0 ? 0.1 : (totalDamage / ttf);
   
-  return { realDps, tdo: totalDamage, ttf: Number(ttf.toFixed(1)) };
+  // TTW 數學模型推導
+  const BOSS_HP = 15000;
+  const deaths = Math.max(0, Math.ceil(BOSS_HP / (totalDamage || 1)) - 1);
+  const relobbies = Math.floor(deaths / 6);
+  // 總時間 = (打王時間) + (陣亡切換 2s) + (滅團進出 15s)
+  const ttw = (BOSS_HP / realDps) + (deaths * 2) + (relobbies * 15);
+
+  return { 
+    realDps: Number(realDps.toFixed(1)), 
+    tdo: totalDamage, 
+    ttf: Number(ttf.toFixed(1)),
+    ttw: Number(ttw.toFixed(1)),
+    deaths
+  };
 };
 
 export const searchBestAttackers = (
@@ -147,14 +156,10 @@ export const searchBestAttackers = (
   const tierOrder = ['T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6'];
   
   allPokemon.forEach(pokemon => {
-    // 【門檻一】：基礎攻擊力斬殺線寫死 180
     if ((pokemon.baseStats?.atk || 0) < 180) return;
-
-    // 處理使用者開關
     if (!options.includeShadow && pokemon.speciesId.includes('shadow')) return;
     if (!options.includeMega && pokemon.speciesId.includes('mega')) return;
 
-    // 計算最差的防禦抗性 (被頭目打有多痛)
     let worstDefMultiplier = 0;
     defenderTypes.forEach(enemyAtkType => {
       let multiplier = 1.0;
@@ -170,7 +175,6 @@ export const searchBestAttackers = (
     let bestCombo: any = null;
     let bestAtkMultForTier = 0;
 
-    // 【門檻二與三】：招式組合與相剋倍率篩選
     pokemon.fastMoves.forEach(fId => {
       const fMove = movesDict[fId];
       if (!fMove) return;
@@ -186,14 +190,12 @@ export const searchBestAttackers = (
         });
         
         if (cMult > bestAtkMultForTier) bestAtkMultForTier = cMult;
-
-        // 如果大招連基本的 1.6 倍克制都沒有，跳過模擬以節省算力
         if (cMult < 1.5) return;
 
-        // 進入 60 秒實戰模擬
         const simResult = simulateCombat(pokemon, fMove, cMove, defenderTypes, worstDefMultiplier);
         
-        if (!bestCombo || simResult.realDps > bestCombo.realDps) {
+        // 尋找 TTW 最短的招式組合
+        if (!bestCombo || simResult.ttw < bestCombo.ttw) {
            bestCombo = {
               bestFastMoveId: fMove.moveId,
               bestAtkMoveId: cMove.moveId,
@@ -205,7 +207,6 @@ export const searchBestAttackers = (
       });
     });
 
-    // 若無有效招式或無法構成 T6 以上的威脅，則淘汰
     if (!bestCombo || bestAtkMultForTier < 1.5) return;
 
     const tierInfo = getTier(bestAtkMultForTier, worstDefMultiplier);
@@ -226,8 +227,8 @@ export const searchBestAttackers = (
   tierOrder.forEach(tierKey => {
     if (tierMap.has(tierKey)) {
       const group = tierMap.get(tierKey)!;
-      // 【關鍵改動】：同級別內，嚴格按照實戰 DPS 由高到低排序！
-      group.pokemonList.sort((a, b) => b.realDps - a.realDps);
+      // 依據 TTW (總通關時間) 由小到大排序！
+      group.pokemonList.sort((a, b) => a.ttw - b.ttw);
       finalResults.push(group);
     }
   });
