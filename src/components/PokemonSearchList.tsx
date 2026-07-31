@@ -7,35 +7,38 @@ interface PokemonSearchListProps {
   isLoading: boolean;
 }
 
-// 抽出單一級別區塊的元件，獨立管理「展開/收起」的狀態防呆
 const TierSection: React.FC<{ group: TierGroup }> = ({ group }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const PAGING_SIZE = 5;
   const totalCount = group.pokemonList.length;
   const isOverLimit = totalCount > PAGING_SIZE;
   
-  // 決定畫面上要顯示哪些名單
   const displayList = isExpanded ? group.pokemonList : group.pokemonList.slice(0, PAGING_SIZE);
   const remainingCount = totalCount - PAGING_SIZE;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
       
-      {/* 標題列 */}
-      <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+      <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
         <h3 className="text-lg font-bold text-gray-800">
-          {group.tier} <span className="text-sm font-normal text-gray-500 ml-2">({group.label})</span>
+          {group.tier} <span className="text-sm font-normal text-gray-500 ml-2 hidden sm:inline">({group.label})</span>
         </h3>
+        <span className="text-[11px] font-medium text-gray-500 bg-gray-200/60 px-2 py-1 rounded-md">
+          依實戰 DPS 排序
+        </span>
       </div>
       
-      {/* 全寬度雙語列表區塊 */}
+      {/* 手機版將過長的抗性說明移到第二行顯示，避免擠壓標題 */}
+      <div className="bg-gray-50 px-4 pb-2 sm:hidden block text-xs font-normal text-gray-500">
+        {group.label}
+      </div>
+      
       <div className="flex flex-col">
         {displayList.map((pokemon, index) => (
-          <PokemonListItem key={`${pokemon.dex}-${index}`} pokemon={pokemon} />
+          <PokemonListItem key={`${pokemon.speciesId}-${index}`} pokemon={pokemon} />
         ))}
       </div>
 
-      {/* 展開看更多按鈕 (若符合數量小於 5 則自動隱藏) */}
       {isOverLimit && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
@@ -50,7 +53,7 @@ const TierSection: React.FC<{ group: TierGroup }> = ({ group }) => {
 
 export const PokemonSearchList: React.FC<PokemonSearchListProps> = ({ tierGroups, isLoading }) => {
   if (isLoading) {
-    return <div className="text-center text-gray-500 py-10">資料載入與翻譯運算中...</div>;
+    return <div className="text-center text-gray-500 py-10 animate-pulse">實戰時間軸模擬中，請稍候...</div>;
   }
 
   if (tierGroups.length === 0) {
@@ -60,7 +63,6 @@ export const PokemonSearchList: React.FC<PokemonSearchListProps> = ({ tierGroups
   return (
     <div className="space-y-6 mt-6">
       {tierGroups.map((group) => {
-        // 級別陣列為空，直接不渲染該區塊
         if (group.pokemonList.length === 0) return null;
         return <TierSection key={group.tier} group={group} />;
       })}
