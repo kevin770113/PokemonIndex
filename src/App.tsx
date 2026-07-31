@@ -54,17 +54,20 @@ const App: React.FC = () => {
     setIsSearching(true);
     setHasSearched(true);
     try {
-      // 平行發送三個請求，載入雙資料庫與翻譯快取
-      const [pokemonResponse, movesResponse, _] = await Promise.all([
+      // 方案 C：只需抓取單一整合檔案與翻譯快取
+      const [dataResponse, _] = await Promise.all([
         fetch('/pokemon-data.json'),
-        fetch('/moves-data.json'),
         initTranslator()
       ]);
 
-      if (!pokemonResponse.ok || !movesResponse.ok) throw new Error('Network response was not ok');
+      if (!dataResponse.ok) throw new Error('Network response was not ok');
       
-      const allPokemon: PokemonData[] = await pokemonResponse.json();
-      const movesDict: Record<string, MoveData> = await movesResponse.json();
+      // 讀取整合後的 JSON 物件
+      const gameData = await dataResponse.json();
+      
+      // 從大物件中拆分出寶可夢陣列與招式字典
+      const allPokemon: PokemonData[] = gameData.pokemon;
+      const movesDict: Record<string, MoveData> = gameData.moves;
       
       const results = searchBestAttackers(
         allPokemon, 
@@ -75,7 +78,7 @@ const App: React.FC = () => {
       setTierResults(results);
     } catch (error) {
       console.error("無法載入資料:", error);
-      alert("資料載入失敗，請確認 pokemon-data.json 與 moves-data.json 是否存在。");
+      alert("資料載入失敗，請確認 pokemon-data.json 是否存在或格式是否正確。");
     } finally {
       setIsSearching(false);
     }
