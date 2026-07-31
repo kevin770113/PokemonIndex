@@ -1,70 +1,78 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const fs = require('fs');
+const path = require('path');
 
-// ES Module 環境下的路徑處理
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// 定位 public 資料夾
+const PUBLIC_DIR = path.join(__dirname, '../public');
+// PvPoke 官方開源資料庫網址
+const GAMEMASTER_URL = 'https://raw.githubusercontent.com/pvpoke/pvpoke/master/src/data/gamemaster.json';
 
-const PVPOKE_URL = 'https://raw.githubusercontent.com/pvpoke/pvpoke/master/src/data/gamemaster.json';
-const OUTPUT_PATH = path.join(__dirname, '../public/pokemon-data.json');
-
-async function fetchAndCleanData() {
+async function fetchAndProcessData() {
+  console.log('🔄 開始從 PvPoke 獲取最新 gamemaster.json 資料...');
+  
   try {
-    console.log('⏳ 開始從 PvPoke 獲取最新 gamemaster.json...');
-    
-    const response = await fetch(PVPOKE_URL);
+    const response = await fetch(GAMEMASTER_URL);
     if (!response.ok) {
-      throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    const rawData = await response.json();
-    console.log('✅ 成功獲取原始資料，開始處理招式屬性映射...');
+    const data = await response.json();
+    console.log('✅ 成功獲取原始資料，開始進行萃取與轉化...');
 
-    // 建立招式對應屬性的字典 (Dictionary)
-    const moveTypeMap = new Map();
-    if (rawData.moves) {
-      rawData.moves.forEach(move => {
-        // PvPoke 的 move 物件包含 moveId (如 VINE_WHIP) 與 type (如 grass)
-        moveTypeMap.set(move.moveId, move.type);
-      });
-    }
+    // ==========================================
+    // 1. 萃取寶可夢清單與基礎三圍 (Base Stats)
+    // ==========================================
+    const pokemonList = data.pokemon.map(p => ({
+      speciesId: p.speciesId,
+      speciesName: p.speciesName,
+      dex: p.dex,
+      types: p.types,
+      // 補上基礎三圍，供後續實戰模擬與斬殺線過濾使用
+      baseStats: {
+        atk: p.baseStats.atk,
+        def: p.baseStats.def,
+        hp: p.baseStats.hp
+      },
+      fastMoves: p.fastMoves || [],
+      chargedMoves: p.chargedMoves || []
+    }));
 
-    // 輔助函式：將招式字串轉換為帶有屬性的物件
-    const mapMove = (moveId) => ({
-      name: moveId,
-      type: moveTypeMap.get(moveId) || 'normal' // 若無對應屬性預設為 normal
+    // ==========================================
+    // 2. 萃取招式數據 (Moves Data)
+    // ==========================================
+    const movesData = {};
+    data.moves.forEach(m => {
+      movesData[m.moveId] = {
+        moveId: m.moveId,
+        name: m.name,
+        type: m.type,
+        // 補上戰鬥計算所需數值
+        power: m.power || 0,
+        energy: m.energy || 0, 
+        cooldown: m.cooldown || 500
+      };
     });
 
-    console.log('✅ 開始清洗寶可夢資料並綁定招式屬性...');
-    // 精準萃取需要的欄位，並將招式轉換為物件結構
-    const cleanedPokemon = rawData.pokemon
-      .filter(p => p.dex !== undefined) 
-      .map(p => ({
-        dex: p.dex,
-        speciesId: p.speciesId,
-        speciesName: p.speciesName,
-        types: p.types || [], 
-        fastMoves: (p.fastMoves || []).map(mapMove),
-        chargedMoves: (p.chargedMoves || []).map(mapMove)
-      }));
-
-    // 確保 public 資料夾存在
-    const publicDir = path.join(__dirname, '../public');
-    if (!fs.existsSync(publicDir)) {
-      fs.mkdirSync(publicDir, { recursive: true });
+    if (!fs.existsSync(PUBLIC_DIR)) {
+      fs.mkdirSync(PUBLIC_DIR, { recursive: true });
     }
 
-    // 將瘦身且升級後的結果寫入 public/pokemon-data.json
-    fs.writeFileSync(OUTPUT_PATH, JSON.stringify(cleanedPokemon, null, 2));
-    
-    console.log(`🎉 清洗完成！共擷取了 ${cleanedPokemon.length} 筆寶可夢形態資料。`);
-    console.log(`📂 檔案已成功輸出至: ${OUTPUT_PATH}`);
+    // 寫入兩個全新的 JSON 檔案
+    fs.writeFileSync(
+      path.join(PUBLIC_DIR, 'pokemon-data.json'), 
+      JSON.stringify(pokemonList, null, 2)
+    );
+    console.log(`📝 成功更新 pokemon-data.json (共 ${pokemonList.length} 筆)`);
+
+    fs.writeFileSync(
+      path.join(PUBLIC_DIR, 'moves-data.json'), 
+      JSON.stringify(movesData, null, 2)
+    );
+    console.log(`📝 成功新增 moves-data.json (共 ${Object.keys(movesData).length} 筆)`);
+
+    console.log('🎉 階段一：爬蟲升級與資料庫建置完成！');
 
   } catch (error) {
-    console.error('❌ 獲取或清洗資料失敗:', error.message);
-    process.exit(1); 
+    console.error('❌ 爬蟲執行失敗:', error);
   }
 }
 
-fetchAndCleanData();
+fetchAndProcessData();
