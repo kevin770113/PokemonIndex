@@ -149,7 +149,7 @@ const App: React.FC = () => {
 
           {hasSearched && !isSearching && tierResults.length === 0 && (
             <div className="mt-6 text-center text-gray-400 py-6 border-2 border-dashed border-gray-200 rounded-xl">
-              沒有符合攻擊門檻 (Atk > 180) 的有效戰力。
+              沒有符合攻擊門檻 (Atk &gt; 180) 的有效戰力。
             </div>
           )}
           
