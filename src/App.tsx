@@ -147,12 +147,13 @@ const App: React.FC = () => {
               <p className="text-gray-400">15,000 HP / 頭目基礎 DPS: 15 / 陣亡延遲 2s / 滅團重返 15s</p>
             </div>
             <div>
-              <p className="font-bold text-gray-600 mb-1">⚔️ 動態淘汰門檻 (為防神獸壓縮榜單，以「平民第一名」為基準)：</p>
+              <p className="font-bold text-gray-600 mb-1">⚔️ 動態淘汰門檻 (平民基準 + 保底機制)：</p>
               <ul className="grid grid-cols-2 gap-1 text-gray-400">
                 <li><span className="font-medium text-gray-500">S級：</span>落後平民 10% 內</li>
                 <li><span className="font-medium text-gray-500">A級：</span>落後平民 20% 內</li>
                 <li><span className="font-medium text-gray-500">B級：</span>落後平民 50% 內</li>
-                <li><span className="font-medium text-red-400">淘汰：</span>落後平民 &gt; 50%</li>
+                <li><span className="font-medium text-gray-500">C級：</span>為湊滿 50 隻之名單</li>
+                <li className="col-span-2 mt-1"><span className="font-medium text-red-400">絕對淘汰線：</span>TTW &gt; 1000s (約需 4 人以上)</li>
               </ul>
             </div>
           </div>
