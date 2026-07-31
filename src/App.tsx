@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PokemonType } from './types/pokemon';
 import { PokemonData } from './types/database';
 import { TypeSelector } from './components/TypeSelector';
@@ -16,11 +16,20 @@ const App: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   
-  // 實作使用者參數開關
   const [includeShadow, setIncludeShadow] = useState(true);
   const [includeMega, setIncludeMega] = useState(true);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const { needRefresh, setNeedRefresh, updateServiceWorker } = usePWA();
+
+  // 監聽滾動以顯示/隱藏回到頂部按鈕
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const handleToggleType = (type: PokemonType) => {
     setSelectedTypes(prev => {
@@ -54,7 +63,6 @@ const App: React.FC = () => {
     setIsSearching(true);
     setHasSearched(true);
     try {
-      // 方案 C：只需抓取單一整合檔案與翻譯快取
       const [dataResponse, _] = await Promise.all([
         fetch('/pokemon-data.json'),
         initTranslator()
@@ -62,10 +70,7 @@ const App: React.FC = () => {
 
       if (!dataResponse.ok) throw new Error('Network response was not ok');
       
-      // 讀取整合後的 JSON 物件
       const gameData = await dataResponse.json();
-      
-      // 從大物件中拆分出寶可夢陣列與招式字典
       const allPokemon: PokemonData[] = gameData.pokemon;
       const movesDict: Record<string, MoveData> = gameData.moves;
       
@@ -85,12 +90,12 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 p-4 sm:p-8 font-sans relative">
+    <div className="min-h-screen bg-gray-50 text-gray-800 p-4 sm:p-8 font-sans relative pb-24">
       <div className="max-w-3xl mx-auto space-y-8">
         
         <header className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Pokémon GO 屬性相剋計算機
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+            Pokémon GO PVE 屬性相剋計算機
           </h1>
           <p className="mt-2 text-gray-500 text-sm">
             請選擇防守方寶可夢的屬性（最多兩個）
@@ -137,6 +142,18 @@ const App: React.FC = () => {
               包含超級進化 (Mega)
             </label>
           </div>
+
+          {/* 參數透明化說明區 */}
+          <div className="mt-5 bg-gray-50 p-4 rounded-xl border border-gray-200 text-xs text-gray-400 space-y-1">
+            <p className="font-bold text-gray-500 mb-1">💡 實戰通關時間 (TTW) 模擬假設：</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>頭目血量：15,000 HP (五星團體戰標準)</li>
+              <li>頭目基礎 DPS：15 (影響我方受傷集氣與死亡速度)</li>
+              <li>寶可夢陣亡切換延遲：2 秒</li>
+              <li>六隻全滅重返大廳懲罰：15 秒</li>
+              <li>極限戰鬥時間限制：300 秒</li>
+            </ul>
+          </div>
           
           <div className="mt-6 border-t border-gray-100 text-center pt-6">
             <button
@@ -160,6 +177,18 @@ const App: React.FC = () => {
         </section>
 
       </div>
+
+      {/* 浮動的回到頂部按鈕 */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 p-3 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-700 transition-all z-50 backdrop-blur-sm bg-opacity-80 active:scale-90"
+          title="回到最上方"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+        </button>
+      )}
+
       <UpdateToast needRefresh={needRefresh} updateServiceWorker={updateServiceWorker} closeToast={() => setNeedRefresh(false)} />
     </div>
   );
