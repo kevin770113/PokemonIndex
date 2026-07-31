@@ -29,7 +29,6 @@ async function fetchAndProcessData() {
       speciesName: p.speciesName,
       dex: p.dex,
       types: p.types,
-      // 補上基礎三圍，供後續實戰模擬與斬殺線過濾使用
       baseStats: {
         atk: p.baseStats.atk,
         def: p.baseStats.def,
@@ -48,35 +47,35 @@ async function fetchAndProcessData() {
         moveId: m.moveId,
         name: m.name,
         type: m.type,
-        // 補上戰鬥計算所需數值
         power: m.power || 0,
         energy: m.energy || 0, 
         cooldown: m.cooldown || 500
       };
     });
 
+    // ==========================================
+    // 3. 方案 C 核心：將兩者打包為單一物件
+    // ==========================================
+    const combinedData = {
+      pokemon: pokemonList,
+      moves: movesData
+    };
+
     if (!fs.existsSync(PUBLIC_DIR)) {
       fs.mkdirSync(PUBLIC_DIR, { recursive: true });
     }
 
-    // 寫入兩個全新的 JSON 檔案
+    // 只寫入唯一的 pokemon-data.json 檔案
     fs.writeFileSync(
       path.join(PUBLIC_DIR, 'pokemon-data.json'), 
-      JSON.stringify(pokemonList, null, 2)
+      JSON.stringify(combinedData, null, 2)
     );
-    console.log(`📝 成功更新 pokemon-data.json (共 ${pokemonList.length} 筆)`);
-
-    fs.writeFileSync(
-      path.join(PUBLIC_DIR, 'moves-data.json'), 
-      JSON.stringify(movesData, null, 2)
-    );
-    console.log(`📝 成功新增 moves-data.json (共 ${Object.keys(movesData).length} 筆)`);
-
-    console.log('🎉 階段一：爬蟲升級與資料庫建置完成！');
+    
+    console.log(`📝 成功更新 pokemon-data.json (包含 ${pokemonList.length} 隻寶可夢與 ${Object.keys(movesData).length} 個招式)`);
+    console.log('🎉 階段一 (方案C)：爬蟲升級與單一資料庫建置完成！');
 
   } catch (error) {
     console.error('❌ 爬蟲執行失敗:', error);
-    // 強制設定 exit code 1，讓 GitHub Actions 能精準捕捉到錯誤日誌
     process.exit(1); 
   }
 }
