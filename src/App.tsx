@@ -22,7 +22,6 @@ const App: React.FC = () => {
 
   const { needRefresh, setNeedRefresh, updateServiceWorker } = usePWA();
 
-  // 監聽滾動以顯示/隱藏回到頂部按鈕
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 300);
     window.addEventListener('scroll', handleScroll);
@@ -121,7 +120,6 @@ const App: React.FC = () => {
           <h2 className="text-xl font-bold mb-4">防守弱點與戰鬥模擬分析</h2>
           <ResultSection results={effectivenessResults} />
           
-          {/* 過濾開關區塊 */}
           <div className="mt-6 flex flex-wrap gap-4 justify-center">
             <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
               <input 
@@ -143,16 +141,21 @@ const App: React.FC = () => {
             </label>
           </div>
 
-          {/* 參數透明化說明區 */}
-          <div className="mt-5 bg-gray-50 p-4 rounded-xl border border-gray-200 text-xs text-gray-400 space-y-1">
-            <p className="font-bold text-gray-500 mb-1">💡 實戰通關時間 (TTW) 模擬假設：</p>
-            <ul className="list-disc pl-5 space-y-0.5">
-              <li>頭目血量：15,000 HP (五星團體戰標準)</li>
-              <li>頭目基礎 DPS：15 (影響我方受傷集氣與死亡速度)</li>
-              <li>寶可夢陣亡切換延遲：2 秒</li>
-              <li>六隻全滅重返大廳懲罰：15 秒</li>
-              <li>極限戰鬥時間限制：300 秒</li>
-            </ul>
+          {/* 參數與淘汰規則透明化說明區 */}
+          <div className="mt-5 bg-gray-50 p-4 rounded-xl border border-gray-200 text-xs text-gray-500 space-y-3">
+            <div>
+              <p className="font-bold text-gray-600 mb-1">💡 通關時間 (TTW) 運算假設：</p>
+              <p className="text-gray-400">15,000 HP / 頭目基礎 DPS: 15 / 陣亡延遲 2s / 滅團重返 15s</p>
+            </div>
+            <div>
+              <p className="font-bold text-gray-600 mb-1">⚔️ 動態淘汰門檻 (以 MVP 為基準)：</p>
+              <ul className="grid grid-cols-2 gap-1 text-gray-400">
+                <li><span className="font-medium text-gray-500">S級：</span>落後 10% 內</li>
+                <li><span className="font-medium text-gray-500">A級：</span>落後 20% 內</li>
+                <li><span className="font-medium text-gray-500">B級：</span>落後 50% 內</li>
+                <li><span className="font-medium text-red-400">淘汰：</span>落後 &gt; 50%</li>
+              </ul>
+            </div>
           </div>
           
           <div className="mt-6 border-t border-gray-100 text-center pt-6">
@@ -169,7 +172,7 @@ const App: React.FC = () => {
 
           {hasSearched && !isSearching && tierResults.length === 0 && (
             <div className="mt-6 text-center text-gray-400 py-6 border-2 border-dashed border-gray-200 rounded-xl">
-              沒有符合攻擊門檻 (Atk &gt; 180) 的有效戰力。
+              沒有符合攻擊門檻或已被動態評級系統淘汰。
             </div>
           )}
           
@@ -178,7 +181,6 @@ const App: React.FC = () => {
 
       </div>
 
-      {/* 浮動的回到頂部按鈕 */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
