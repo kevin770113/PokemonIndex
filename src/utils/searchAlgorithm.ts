@@ -41,7 +41,6 @@ const is0625 = (value: number) => value > 0.5 && value < 0.8;
 const getTier = (atk: number, def: number): { tier: string, label: string } | null => {
   const isAtk256 = atk > 2.5;
   const isAtk16 = atk > 1.5 && atk < 2.5;
-  const isAtk1 = isCloseTo(atk, 1.0);
 
   const defIs025 = isLessThan025(def);
   const defIs039 = is039(def);
