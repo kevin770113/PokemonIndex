@@ -20,16 +20,15 @@ const TierSection: React.FC<{ group: TierGroup }> = ({ group }) => {
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
       
       <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-        <h3 className="text-lg font-bold text-gray-800">
+        <h3 className="text-lg font-bold text-gray-800 flex-shrink-0">
           {group.tier} <span className="text-sm font-normal text-gray-500 ml-2 hidden sm:inline">({group.label})</span>
         </h3>
-        <span className="text-[11px] font-medium text-gray-500 bg-gray-200/60 px-2 py-1 rounded-md">
-          依實戰 DPS 排序
+        <span className="text-[10px] sm:text-[11px] font-medium text-gray-500 bg-gray-200/60 px-2 py-1 rounded-md shrink-0">
+          依通關時間 (TTW) 排序
         </span>
       </div>
       
-      {/* 手機版將過長的抗性說明移到第二行顯示，避免擠壓標題 */}
-      <div className="bg-gray-50 px-4 pb-2 sm:hidden block text-xs font-normal text-gray-500">
+      <div className="bg-gray-50 px-4 pb-2 sm:hidden block text-[11px] font-normal text-gray-500">
         {group.label}
       </div>
       
@@ -42,7 +41,7 @@ const TierSection: React.FC<{ group: TierGroup }> = ({ group }) => {
       {isOverLimit && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full py-3 text-sm font-bold text-blue-600 bg-blue-50/30 hover:bg-blue-50 transition-colors border-t border-gray-100 active:bg-blue-100"
+          className="w-full py-3 text-sm font-bold text-blue-600 bg-blue-50/30 hover:bg-blue-50 transition-colors border-t border-gray-100 active:bg-blue-100 outline-none"
         >
           {isExpanded ? '收起名單 ▲' : `展開看更多符合名單 (還有 ${remainingCount} 隻) ▼`}
         </button>
