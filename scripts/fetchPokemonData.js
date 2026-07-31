@@ -1,9 +1,13 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// 解決 Vite (ES Module) 環境下找不到 __dirname 的問題
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 定位 public 資料夾
 const PUBLIC_DIR = path.join(__dirname, '../public');
-// PvPoke 官方開源資料庫網址
 const GAMEMASTER_URL = 'https://raw.githubusercontent.com/pvpoke/pvpoke/master/src/data/gamemaster.json';
 
 async function fetchAndProcessData() {
@@ -72,6 +76,8 @@ async function fetchAndProcessData() {
 
   } catch (error) {
     console.error('❌ 爬蟲執行失敗:', error);
+    // 強制設定 exit code 1，讓 GitHub Actions 能精準捕捉到錯誤日誌
+    process.exit(1); 
   }
 }
 
