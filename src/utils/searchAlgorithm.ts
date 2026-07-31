@@ -35,9 +35,6 @@ const formatType = (typeStr: string): PokemonType => {
   return (typeStr.charAt(0).toUpperCase() + typeStr.slice(1).toLowerCase()) as PokemonType;
 };
 
-/**
- * 核心：300 秒 TTW 實戰通關模型
- */
 const simulateCombat = (
   pokemon: PokemonData,
   fastMove: MoveData,
@@ -127,7 +124,7 @@ export const searchBestAttackers = (
   const validPokemonList: SearchResult[] = [];
   
   allPokemon.forEach(pokemon => {
-    // 靜態門檻：基礎攻擊力斬殺線
+    // 靜態門檻保持不變，保留奇兵
     if ((pokemon.baseStats?.atk || 0) < 180) return;
 
     if (!options.includeShadow && pokemon.speciesId.includes('shadow')) return;
@@ -163,12 +160,10 @@ export const searchBestAttackers = (
         });
         
         if (cMult > bestAtkMultForTier) bestAtkMultForTier = cMult;
-        // 如果連基本的克制都沒有，跳過
         if (cMult < 1.5) return;
 
         const simResult = simulateCombat(pokemon, fMove, cMove, defenderTypes, worstDefMultiplier);
         
-        // 尋找 TTW 最短的招式組合
         if (!bestCombo || simResult.ttw < bestCombo.ttw) {
            bestCombo = {
               bestFastMoveId: fMove.moveId,
@@ -195,29 +190,34 @@ export const searchBestAttackers = (
   // 全體統一依照 TTW 由快到慢排序
   validPokemonList.sort((a, b) => a.ttw - b.ttw);
 
-  // 第一名即為 MVP 基準
-  const benchmarkTTW = validPokemonList[0].ttw;
+  // 取得全場第一名 (絕對 MVP)
+  const absoluteBestTTW = validPokemonList[0].ttw;
+  
+  // 方案一：尋找非暗影、非 Mega 的「平民第一名」作為基準線。如果找不到，才退回用絕對第一名當基準。
+  const regularBest = validPokemonList.find(p => !p.speciesId.includes('shadow') && !p.speciesId.includes('mega'));
+  const benchmarkTTW = regularBest ? regularBest.ttw : absoluteBestTTW;
 
   const groups: TierGroup[] = [
     { tier: 'MVP', label: '極限通關首選', pokemonList: [] },
-    { tier: 'S', label: '落後 10% 以內 (頂級神手)', pokemonList: [] },
-    { tier: 'A', label: '落後 10%~20% (卓越戰力)', pokemonList: [] },
-    { tier: 'B', label: '落後 20%~50% (優質備用)', pokemonList: [] }
+    { tier: 'S', label: '平民基準 10% 內 (頂級神手)', pokemonList: [] },
+    { tier: 'A', label: '平民基準 10%~20% (卓越戰力)', pokemonList: [] },
+    { tier: 'B', label: '平民基準 20%~50% (優質備用)', pokemonList: [] }
   ];
 
   validPokemonList.forEach(poke => {
-    if (poke.ttw === benchmarkTTW) {
+    // 只要是跟全場第一名一樣快，無條件進入 MVP 寶座
+    if (poke.ttw === absoluteBestTTW) {
       groups[0].pokemonList.push(poke);
-    } else if (poke.ttw <= benchmarkTTW * 1.1) {
+    } 
+    // 後續依照「平民基準」進行相對落後幅度過濾
+    else if (poke.ttw <= benchmarkTTW * 1.1) {
       groups[1].pokemonList.push(poke);
     } else if (poke.ttw <= benchmarkTTW * 1.2) {
       groups[2].pokemonList.push(poke);
     } else if (poke.ttw <= benchmarkTTW * 1.5) {
       groups[3].pokemonList.push(poke);
     }
-    // 大於 1.5 倍 (50%) 的寶可夢，直接丟棄不處理
   });
 
-  // 只回傳有內容的群組
   return groups.filter(g => g.pokemonList.length > 0);
 };
