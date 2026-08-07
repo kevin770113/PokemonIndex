@@ -42901,6 +42901,14 @@
       "energy": 45,
       "cooldown": 500
     },
+    "ACID_SPRAY_PLUS": {
+      "moveId": "ACID_SPRAY_PLUS",
+      "name": "Acid Spray+",
+      "type": "poison",
+      "power": 20,
+      "energy": 40,
+      "cooldown": 500
+    },
     "ACROBATICS": {
       "moveId": "ACROBATICS",
       "name": "Acrobatics",
@@ -43131,6 +43139,14 @@
       "type": "fighting",
       "power": 50,
       "energy": 40,
+      "cooldown": 500
+    },
+    "BRICK_BREAK_PLUS": {
+      "moveId": "BRICK_BREAK_PLUS",
+      "name": "Brick Break+",
+      "type": "fighting",
+      "power": 40,
+      "energy": 35,
       "cooldown": 500
     },
     "BRINE": {
@@ -43469,6 +43485,14 @@
       "energy": 40,
       "cooldown": 500
     },
+    "DRILL_PECK_PLUS": {
+      "moveId": "DRILL_PECK_PLUS",
+      "name": "Drill Peck+",
+      "type": "flying",
+      "power": 60,
+      "energy": 35,
+      "cooldown": 500
+    },
     "DRILL_RUN": {
       "moveId": "DRILL_RUN",
       "name": "Drill Run",
@@ -43499,6 +43523,14 @@
       "type": "fighting",
       "power": 90,
       "energy": 45,
+      "cooldown": 500
+    },
+    "DYNAMIC_PUNCH_PLUS": {
+      "moveId": "DYNAMIC_PUNCH_PLUS",
+      "name": "Dynamic Punch+",
+      "type": "fighting",
+      "power": 130,
+      "energy": 80,
       "cooldown": 500
     },
     "EARTHQUAKE": {
@@ -43755,6 +43787,14 @@
       "type": "psychic",
       "power": 110,
       "energy": 65,
+      "cooldown": 500
+    },
+    "FUTURE_SIGHT_PLUS": {
+      "moveId": "FUTURE_SIGHT_PLUS",
+      "name": "Future Sight+",
+      "type": "psychic",
+      "power": 130,
+      "energy": 80,
       "cooldown": 500
     },
     "GEOMANCY": {
@@ -44229,6 +44269,14 @@
       "energy": 45,
       "cooldown": 500
     },
+    "LIQUIDATION_PLUS": {
+      "moveId": "LIQUIDATION_PLUS",
+      "name": "Liquidation+",
+      "type": "water",
+      "power": 55,
+      "energy": 40,
+      "cooldown": 500
+    },
     "LOCK_ON": {
       "moveId": "LOCK_ON",
       "name": "Lock On",
@@ -44429,6 +44477,14 @@
       "energy": 45,
       "cooldown": 500
     },
+    "MYSTICAL_FIRE_PLUS": {
+      "moveId": "MYSTICAL_FIRE_PLUS",
+      "name": "Mystical Fire+",
+      "type": "fire",
+      "power": 50,
+      "energy": 40,
+      "cooldown": 500
+    },
     "NATURES_MADNESS": {
       "moveId": "NATURES_MADNESS",
       "name": "Nature's Madness",
@@ -44501,6 +44557,14 @@
       "energy": 60,
       "cooldown": 500
     },
+    "OUTRAGE_PLUS": {
+      "moveId": "OUTRAGE_PLUS",
+      "name": "Outrage+",
+      "type": "dragon",
+      "power": 80,
+      "energy": 50,
+      "cooldown": 500
+    },
     "OVERHEAT": {
       "moveId": "OVERHEAT",
       "name": "Overheat",
@@ -44541,20 +44605,20 @@
       "energy": 65,
       "cooldown": 500
     },
-    "PLAY_ROUGH": {
-      "moveId": "PLAY_ROUGH",
-      "name": "Play Rough",
-      "type": "fairy",
-      "power": 90,
-      "energy": 60,
-      "cooldown": 500
-    },
     "PLASMA_FISTS": {
       "moveId": "PLASMA_FISTS",
       "name": "Plasma Fists",
       "type": "electric",
       "power": 60,
       "energy": 35,
+      "cooldown": 500
+    },
+    "PLAY_ROUGH": {
+      "moveId": "PLAY_ROUGH",
+      "name": "Play Rough",
+      "type": "fairy",
+      "power": 90,
+      "energy": 60,
       "cooldown": 500
     },
     "POISON_FANG": {
@@ -44651,6 +44715,14 @@
       "type": "psychic",
       "power": 70,
       "energy": 60,
+      "cooldown": 500
+    },
+    "PSYBEAM_PLUS": {
+      "moveId": "PSYBEAM_PLUS",
+      "name": "Psybeam+",
+      "type": "psychic",
+      "power": 60,
+      "energy": 45,
       "cooldown": 500
     },
     "PSYCHIC": {
@@ -44906,6 +44978,14 @@
       "name": "Seed Bomb",
       "type": "grass",
       "power": 55,
+      "energy": 40,
+      "cooldown": 500
+    },
+    "SEED_BOMB_PLUS": {
+      "moveId": "SEED_BOMB_PLUS",
+      "name": "Seed Bomb+",
+      "type": "grass",
+      "power": 60,
       "energy": 40,
       "cooldown": 500
     },
@@ -45181,6 +45261,14 @@
       "energy": 45,
       "cooldown": 500
     },
+    "SURF_PLUS": {
+      "moveId": "SURF_PLUS",
+      "name": "Surf+",
+      "type": "water",
+      "power": 55,
+      "energy": 35,
+      "cooldown": 500
+    },
     "SWIFT": {
       "moveId": "SWIFT",
       "name": "Swift",
@@ -45389,6 +45477,14 @@
       "energy": 40,
       "cooldown": 500
     },
+    "VOLT_TACKLE_PLUS": {
+      "moveId": "VOLT_TACKLE_PLUS",
+      "name": "Volt Tackle+",
+      "type": "electric",
+      "power": 65,
+      "energy": 35,
+      "cooldown": 500
+    },
     "V_CREATE": {
       "moveId": "V_CREATE",
       "name": "V-Create",
@@ -45531,6 +45627,14 @@
       "type": "electric",
       "power": 150,
       "energy": 80,
+      "cooldown": 500
+    },
+    "ZAP_CANNON_PLUS": {
+      "moveId": "ZAP_CANNON_PLUS",
+      "name": "Zap Cannon+",
+      "type": "electric",
+      "power": 70,
+      "energy": 45,
       "cooldown": 500
     },
     "ZEN_HEADBUTT": {
