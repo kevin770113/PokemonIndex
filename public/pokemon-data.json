@@ -7237,6 +7237,52 @@
       ]
     },
     {
+      "speciesId": "starmie_mega",
+      "speciesName": "Starmie (Mega)",
+      "dex": 121,
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "baseStats": {
+        "atk": 276,
+        "def": 229,
+        "hp": 155
+      },
+      "fastMoves": [
+        "HIDDEN_POWER_BUG",
+        "HIDDEN_POWER_DARK",
+        "HIDDEN_POWER_DRAGON",
+        "HIDDEN_POWER_ELECTRIC",
+        "HIDDEN_POWER_FIGHTING",
+        "HIDDEN_POWER_FIRE",
+        "HIDDEN_POWER_FLYING",
+        "HIDDEN_POWER_GHOST",
+        "HIDDEN_POWER_GRASS",
+        "HIDDEN_POWER_GROUND",
+        "HIDDEN_POWER_ICE",
+        "HIDDEN_POWER_POISON",
+        "HIDDEN_POWER_PSYCHIC",
+        "HIDDEN_POWER_ROCK",
+        "HIDDEN_POWER_STEEL",
+        "HIDDEN_POWER_WATER",
+        "QUICK_ATTACK",
+        "TACKLE",
+        "WATER_GUN",
+        "PSYWAVE"
+      ],
+      "chargedMoves": [
+        "HYDRO_PUMP",
+        "ICE_BEAM",
+        "POWER_GEM",
+        "PSYBEAM",
+        "PSYCHIC",
+        "THUNDER",
+        "SURF",
+        "AQUA_JET"
+      ]
+    },
+    {
       "speciesId": "mr_mime",
       "speciesName": "Mr. Mime",
       "dex": 122,
