@@ -38166,6 +38166,54 @@
       ]
     },
     {
+      "speciesId": "cramorant_gulping",
+      "speciesName": "Cramorant (Gulping)",
+      "dex": 845,
+      "types": [
+        "flying",
+        "water"
+      ],
+      "baseStats": {
+        "atk": 173,
+        "def": 163,
+        "hp": 172
+      },
+      "fastMoves": [
+        "PECK",
+        "WATER_GUN"
+      ],
+      "chargedMoves": [
+        "FLY",
+        "HYDRO_PUMP",
+        "SURF",
+        "DIVE"
+      ]
+    },
+    {
+      "speciesId": "cramorant_gorging",
+      "speciesName": "Cramorant (Gorging)",
+      "dex": 845,
+      "types": [
+        "flying",
+        "water"
+      ],
+      "baseStats": {
+        "atk": 173,
+        "def": 163,
+        "hp": 172
+      },
+      "fastMoves": [
+        "PECK",
+        "WATER_GUN"
+      ],
+      "chargedMoves": [
+        "FLY",
+        "HYDRO_PUMP",
+        "SURF",
+        "DIVE"
+      ]
+    },
+    {
       "speciesId": "arrokuda",
       "speciesName": "Arrokuda",
       "dex": 846,
@@ -43979,6 +44027,22 @@
       "type": "grass",
       "power": 90,
       "energy": 50,
+      "cooldown": 500
+    },
+    "GULP_MISSILE_ARROKUDA": {
+      "moveId": "GULP_MISSILE_ARROKUDA",
+      "name": "Gulp Missile (Arrokuda)",
+      "type": "water",
+      "power": 15,
+      "energy": 0,
+      "cooldown": 500
+    },
+    "GULP_MISSILE_PIKACHU": {
+      "moveId": "GULP_MISSILE_PIKACHU",
+      "name": "Gulp Missile (Pikachu)",
+      "type": "water",
+      "power": 15,
+      "energy": 0,
       "cooldown": 500
     },
     "GUNK_SHOT": {
