@@ -43591,6 +43591,14 @@
       "energy": 45,
       "cooldown": 500
     },
+    "DARK_PULSE_PLUS": {
+      "moveId": "DARK_PULSE_PLUS",
+      "name": "Dark Pulse+",
+      "type": "dark",
+      "power": 60,
+      "energy": 40,
+      "cooldown": 500
+    },
     "DAZZLING_GLEAM": {
       "moveId": "DAZZLING_GLEAM",
       "name": "Dazzling Gleam",
@@ -43857,7 +43865,7 @@
     },
     "FELL_STINGER_PLUS": {
       "moveId": "FELL_STINGER_PLUS",
-      "name": "Fell Stinger",
+      "name": "Fell Stinger+",
       "type": "bug",
       "power": 40,
       "energy": 35,
