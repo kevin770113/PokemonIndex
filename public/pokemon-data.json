@@ -43375,6 +43375,14 @@
       "energy": 55,
       "cooldown": 500
     },
+    "BRAVE_BIRD_PLUS": {
+      "moveId": "BRAVE_BIRD_PLUS",
+      "name": "Brave Bird+",
+      "type": "flying",
+      "power": 70,
+      "energy": 40,
+      "cooldown": 500
+    },
     "BREAKING_SWIPE": {
       "moveId": "BREAKING_SWIPE",
       "name": "Breaking Swipe",
