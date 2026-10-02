@@ -1610,6 +1610,35 @@
       ]
     },
     {
+      "speciesId": "raichu_alolan",
+      "speciesName": "Raichu (Alolan)",
+      "dex": 26,
+      "types": [
+        "electric",
+        "psychic"
+      ],
+      "baseStats": {
+        "atk": 201,
+        "def": 154,
+        "hp": 155
+      },
+      "fastMoves": [
+        "SPARK",
+        "VOLT_SWITCH",
+        "THUNDER_SHOCK"
+      ],
+      "chargedMoves": [
+        "PSYCHIC",
+        "THUNDER_PUNCH",
+        "WILD_CHARGE",
+        "GRASS_KNOT",
+        "TRAILBLAZE",
+        "SURF",
+        "PSYSHOCK",
+        "VOLT_TACKLE"
+      ]
+    },
+    {
       "speciesId": "raichu_mega_x",
       "speciesName": "Raichu (Mega X)",
       "dex": 26,
@@ -1666,35 +1695,6 @@
         "SKULL_BASH",
         "TRAILBLAZE",
         "SURF",
-        "VOLT_TACKLE"
-      ]
-    },
-    {
-      "speciesId": "raichu_alolan",
-      "speciesName": "Raichu (Alolan)",
-      "dex": 26,
-      "types": [
-        "electric",
-        "psychic"
-      ],
-      "baseStats": {
-        "atk": 201,
-        "def": 154,
-        "hp": 155
-      },
-      "fastMoves": [
-        "SPARK",
-        "VOLT_SWITCH",
-        "THUNDER_SHOCK"
-      ],
-      "chargedMoves": [
-        "PSYCHIC",
-        "THUNDER_PUNCH",
-        "WILD_CHARGE",
-        "GRASS_KNOT",
-        "TRAILBLAZE",
-        "SURF",
-        "PSYSHOCK",
         "VOLT_TACKLE"
       ]
     },
@@ -7209,51 +7209,6 @@
       ]
     },
     {
-      "speciesId": "starmie_shadow",
-      "speciesName": "Starmie (Shadow)",
-      "dex": 121,
-      "types": [
-        "water",
-        "psychic"
-      ],
-      "baseStats": {
-        "atk": 210,
-        "def": 184,
-        "hp": 155
-      },
-      "fastMoves": [
-        "HIDDEN_POWER_BUG",
-        "HIDDEN_POWER_DARK",
-        "HIDDEN_POWER_DRAGON",
-        "HIDDEN_POWER_ELECTRIC",
-        "HIDDEN_POWER_FIGHTING",
-        "HIDDEN_POWER_FIRE",
-        "HIDDEN_POWER_FLYING",
-        "HIDDEN_POWER_GHOST",
-        "HIDDEN_POWER_GRASS",
-        "HIDDEN_POWER_GROUND",
-        "HIDDEN_POWER_ICE",
-        "HIDDEN_POWER_POISON",
-        "HIDDEN_POWER_PSYCHIC",
-        "HIDDEN_POWER_ROCK",
-        "HIDDEN_POWER_STEEL",
-        "HIDDEN_POWER_WATER",
-        "TACKLE",
-        "WATER_GUN",
-        "PSYWAVE"
-      ],
-      "chargedMoves": [
-        "HYDRO_PUMP",
-        "ICE_BEAM",
-        "POWER_GEM",
-        "PSYBEAM",
-        "PSYCHIC",
-        "THUNDER",
-        "SURF",
-        "AQUA_JET"
-      ]
-    },
-    {
       "speciesId": "starmie_mega",
       "speciesName": "Starmie (Mega)",
       "dex": 121,
@@ -7284,6 +7239,51 @@
         "HIDDEN_POWER_STEEL",
         "HIDDEN_POWER_WATER",
         "QUICK_ATTACK",
+        "TACKLE",
+        "WATER_GUN",
+        "PSYWAVE"
+      ],
+      "chargedMoves": [
+        "HYDRO_PUMP",
+        "ICE_BEAM",
+        "POWER_GEM",
+        "PSYBEAM",
+        "PSYCHIC",
+        "THUNDER",
+        "SURF",
+        "AQUA_JET"
+      ]
+    },
+    {
+      "speciesId": "starmie_shadow",
+      "speciesName": "Starmie (Shadow)",
+      "dex": 121,
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "baseStats": {
+        "atk": 210,
+        "def": 184,
+        "hp": 155
+      },
+      "fastMoves": [
+        "HIDDEN_POWER_BUG",
+        "HIDDEN_POWER_DARK",
+        "HIDDEN_POWER_DRAGON",
+        "HIDDEN_POWER_ELECTRIC",
+        "HIDDEN_POWER_FIGHTING",
+        "HIDDEN_POWER_FIRE",
+        "HIDDEN_POWER_FLYING",
+        "HIDDEN_POWER_GHOST",
+        "HIDDEN_POWER_GRASS",
+        "HIDDEN_POWER_GROUND",
+        "HIDDEN_POWER_ICE",
+        "HIDDEN_POWER_POISON",
+        "HIDDEN_POWER_PSYCHIC",
+        "HIDDEN_POWER_ROCK",
+        "HIDDEN_POWER_STEEL",
+        "HIDDEN_POWER_WATER",
         "TACKLE",
         "WATER_GUN",
         "PSYWAVE"
@@ -9887,31 +9887,6 @@
       ]
     },
     {
-      "speciesId": "lanturnw",
-      "speciesName": "Lanturn",
-      "dex": 171,
-      "types": [
-        "water",
-        "electric"
-      ],
-      "baseStats": {
-        "atk": 146,
-        "def": 137,
-        "hp": 268
-      },
-      "fastMoves": [
-        "CHARGE_BEAM",
-        "WATER_GUN",
-        "SPARK"
-      ],
-      "chargedMoves": [
-        "HYDRO_PUMP",
-        "THUNDER",
-        "THUNDERBOLT",
-        "SURF"
-      ]
-    },
-    {
       "speciesId": "pichu",
       "speciesName": "Pichu",
       "dex": 172,
@@ -12409,16 +12384,16 @@
       ]
     },
     {
-      "speciesId": "skarmory_shadow",
-      "speciesName": "Skarmory (Shadow)",
+      "speciesId": "skarmory_mega",
+      "speciesName": "Skarmory (Mega)",
       "dex": 227,
       "types": [
         "steel",
         "flying"
       ],
       "baseStats": {
-        "atk": 148,
-        "def": 226,
+        "atk": 273,
+        "def": 228,
         "hp": 163
       },
       "fastMoves": [
@@ -12433,16 +12408,16 @@
       ]
     },
     {
-      "speciesId": "skarmory_mega",
-      "speciesName": "Skarmory (Mega)",
+      "speciesId": "skarmory_shadow",
+      "speciesName": "Skarmory (Shadow)",
       "dex": 227,
       "types": [
         "steel",
         "flying"
       ],
       "baseStats": {
-        "atk": 273,
-        "def": 228,
+        "atk": 148,
+        "def": 226,
         "hp": 163
       },
       "fastMoves": [
@@ -20515,16 +20490,16 @@
       ]
     },
     {
-      "speciesId": "staraptor_shadow",
-      "speciesName": "Staraptor (Shadow)",
+      "speciesId": "staraptor_mega",
+      "speciesName": "Staraptor (Mega)",
       "dex": 398,
       "types": [
-        "normal",
+        "fighting",
         "flying"
       ],
       "baseStats": {
-        "atk": 234,
-        "def": 140,
+        "atk": 278,
+        "def": 207,
         "hp": 198
       },
       "fastMoves": [
@@ -20541,16 +20516,16 @@
       ]
     },
     {
-      "speciesId": "staraptor_mega",
-      "speciesName": "Staraptor (Mega)",
+      "speciesId": "staraptor_shadow",
+      "speciesName": "Staraptor (Shadow)",
       "dex": 398,
       "types": [
-        "fighting",
+        "normal",
         "flying"
       ],
       "baseStats": {
-        "atk": 278,
-        "def": 207,
+        "atk": 234,
+        "def": 140,
         "hp": 198
       },
       "fastMoves": [
@@ -30959,6 +30934,31 @@
       ]
     },
     {
+      "speciesId": "zekrom_shadow",
+      "speciesName": "Zekrom (Shadow)",
+      "dex": 644,
+      "types": [
+        "dragon",
+        "electric"
+      ],
+      "baseStats": {
+        "atk": 275,
+        "def": 211,
+        "hp": 205
+      },
+      "fastMoves": [
+        "DRAGON_BREATH",
+        "CHARGE_BEAM"
+      ],
+      "chargedMoves": [
+        "OUTRAGE",
+        "WILD_CHARGE",
+        "FLASH_CANNON",
+        "CRUNCH",
+        "FUSION_BOLT"
+      ]
+    },
+    {
       "speciesId": "landorus_incarnate",
       "speciesName": "Landorus (Incarnate)",
       "dex": 645,
@@ -32357,8 +32357,57 @@
       ]
     },
     {
+      "speciesId": "pancham_shadow",
+      "speciesName": "Pancham (Shadow)",
+      "dex": 674,
+      "types": [
+        "fighting",
+        "none"
+      ],
+      "baseStats": {
+        "atk": 145,
+        "def": 107,
+        "hp": 167
+      },
+      "fastMoves": [
+        "LOW_KICK",
+        "TACKLE"
+      ],
+      "chargedMoves": [
+        "LOW_SWEEP",
+        "CRUNCH",
+        "BODY_SLAM"
+      ]
+    },
+    {
       "speciesId": "pangoro",
       "speciesName": "Pangoro",
+      "dex": 675,
+      "types": [
+        "fighting",
+        "dark"
+      ],
+      "baseStats": {
+        "atk": 226,
+        "def": 146,
+        "hp": 216
+      },
+      "fastMoves": [
+        "LOW_KICK",
+        "SNARL",
+        "BULLET_PUNCH",
+        "KARATE_CHOP"
+      ],
+      "chargedMoves": [
+        "CLOSE_COMBAT",
+        "NIGHT_SLASH",
+        "IRON_HEAD",
+        "ROCK_SLIDE"
+      ]
+    },
+    {
+      "speciesId": "pangoro_shadow",
+      "speciesName": "Pangoro (Shadow)",
       "dex": 675,
       "types": [
         "fighting",
@@ -35310,8 +35359,59 @@
       ]
     },
     {
+      "speciesId": "fomantis_shadow",
+      "speciesName": "Fomantis (Shadow)",
+      "dex": 753,
+      "types": [
+        "grass",
+        "none"
+      ],
+      "baseStats": {
+        "atk": 100,
+        "def": 64,
+        "hp": 120
+      },
+      "fastMoves": [
+        "RAZOR_LEAF",
+        "FURY_CUTTER",
+        "LEAFAGE"
+      ],
+      "chargedMoves": [
+        "LEAF_BLADE",
+        "ENERGY_BALL",
+        "GRASS_KNOT",
+        "TRAILBLAZE"
+      ]
+    },
+    {
       "speciesId": "lurantis",
       "speciesName": "Lurantis",
+      "dex": 754,
+      "types": [
+        "grass",
+        "none"
+      ],
+      "baseStats": {
+        "atk": 192,
+        "def": 169,
+        "hp": 172
+      },
+      "fastMoves": [
+        "RAZOR_LEAF",
+        "FURY_CUTTER",
+        "LEAFAGE"
+      ],
+      "chargedMoves": [
+        "LEAF_BLADE",
+        "LEAF_STORM",
+        "SUPER_POWER",
+        "X_SCISSOR",
+        "TRAILBLAZE"
+      ]
+    },
+    {
+      "speciesId": "lurantis_shadow",
+      "speciesName": "Lurantis (Shadow)",
       "dex": 754,
       "types": [
         "grass",
@@ -35727,6 +35827,26 @@
       ]
     },
     {
+      "speciesId": "wimpod_shadow",
+      "speciesName": "Wimpod (Shadow)",
+      "dex": 767,
+      "types": [
+        "bug",
+        "water"
+      ],
+      "baseStats": {
+        "atk": 67,
+        "def": 74,
+        "hp": 93
+      },
+      "fastMoves": [
+        "STRUGGLE_BUG"
+      ],
+      "chargedMoves": [
+        "BUG_BUZZ"
+      ]
+    },
+    {
       "speciesId": "golisopod",
       "speciesName": "Golisopod",
       "dex": 768,
@@ -35754,8 +35874,8 @@
       ]
     },
     {
-      "speciesId": "golisopodsh",
-      "speciesName": "Golisopod",
+      "speciesId": "golisopod_shadow",
+      "speciesName": "Golisopod (Shadow)",
       "dex": 768,
       "types": [
         "bug",
@@ -35806,8 +35926,58 @@
       ]
     },
     {
+      "speciesId": "sandygast_shadow",
+      "speciesName": "Sandygast (Shadow)",
+      "dex": 769,
+      "types": [
+        "ghost",
+        "ground"
+      ],
+      "baseStats": {
+        "atk": 120,
+        "def": 118,
+        "hp": 146
+      },
+      "fastMoves": [
+        "ASTONISH",
+        "MUD_SHOT",
+        "SAND_ATTACK"
+      ],
+      "chargedMoves": [
+        "SAND_TOMB",
+        "SHADOW_BALL",
+        "EARTH_POWER",
+        "SCORCHING_SANDS"
+      ]
+    },
+    {
       "speciesId": "palossand",
       "speciesName": "Palossand",
+      "dex": 770,
+      "types": [
+        "ghost",
+        "ground"
+      ],
+      "baseStats": {
+        "atk": 178,
+        "def": 178,
+        "hp": 198
+      },
+      "fastMoves": [
+        "ASTONISH",
+        "MUD_SHOT",
+        "SAND_ATTACK"
+      ],
+      "chargedMoves": [
+        "SAND_TOMB",
+        "SHADOW_BALL",
+        "EARTH_POWER",
+        "SCORCHING_SANDS"
+      ]
+    },
+    {
+      "speciesId": "palossand_shadow",
+      "speciesName": "Palossand (Shadow)",
       "dex": 770,
       "types": [
         "ghost",
@@ -38231,8 +38401,8 @@
       ]
     },
     {
-      "speciesId": "cramorant_gulping",
-      "speciesName": "Cramorant (Gulping)",
+      "speciesId": "cramorant_gorging",
+      "speciesName": "Cramorant (Gorging)",
       "dex": 845,
       "types": [
         "flying",
@@ -38255,8 +38425,8 @@
       ]
     },
     {
-      "speciesId": "cramorant_gorging",
-      "speciesName": "Cramorant (Gorging)",
+      "speciesId": "cramorant_gulping",
+      "speciesName": "Cramorant (Gulping)",
       "dex": 845,
       "types": [
         "flying",
