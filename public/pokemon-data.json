@@ -33429,6 +33429,30 @@
       ]
     },
     {
+      "speciesId": "sliggoo_hisuian",
+      "speciesName": "Sliggoo (Hisuian)",
+      "dex": 705,
+      "types": [
+        "dragon",
+        "steel"
+      ],
+      "baseStats": {
+        "atk": 153,
+        "def": 190,
+        "hp": 151
+      },
+      "fastMoves": [
+        "WATER_GUN",
+        "TACKLE"
+      ],
+      "chargedMoves": [
+        "DRAGON_PULSE",
+        "SLUDGE_WAVE",
+        "WATER_PULSE",
+        "HEAVY_SLAM"
+      ]
+    },
+    {
       "speciesId": "goodra",
       "speciesName": "Goodra",
       "dex": 706,
@@ -33452,6 +33476,31 @@
         "POWER_WHIP",
         "AQUA_TAIL",
         "THUNDER_PUNCH"
+      ]
+    },
+    {
+      "speciesId": "goodra_hisuian",
+      "speciesName": "Goodra (Hisuian)",
+      "dex": 706,
+      "types": [
+        "dragon",
+        "steel"
+      ],
+      "baseStats": {
+        "atk": 211,
+        "def": 255,
+        "hp": 190
+      },
+      "fastMoves": [
+        "WATER_GUN",
+        "DRAGON_TAIL",
+        "IRON_TAIL"
+      ],
+      "chargedMoves": [
+        "DRACO_METEOR",
+        "SLUDGE_WAVE",
+        "HYDRO_PUMP",
+        "HEAVY_SLAM"
       ]
     },
     {
