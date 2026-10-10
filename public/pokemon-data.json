@@ -28186,7 +28186,8 @@
       },
       "fastMoves": [
         "SHADOW_CLAW",
-        "SNARL"
+        "SNARL",
+        "SUCKER_PUNCH"
       ],
       "chargedMoves": [
         "FOUL_PLAY",
