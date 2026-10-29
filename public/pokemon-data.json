@@ -29656,6 +29656,33 @@
       ]
     },
     {
+      "speciesId": "chandelure_mega",
+      "speciesName": "Chandelure (Mega)",
+      "dex": 609,
+      "types": [
+        "ghost",
+        "fire"
+      ],
+      "baseStats": {
+        "atk": 335,
+        "def": 182,
+        "hp": 155
+      },
+      "fastMoves": [
+        "HEX",
+        "FIRE_SPIN",
+        "INCINERATE",
+        "ASTONISH"
+      ],
+      "chargedMoves": [
+        "ENERGY_BALL",
+        "SHADOW_BALL",
+        "OVERHEAT",
+        "FLAME_CHARGE",
+        "POLTERGEIST"
+      ]
+    },
+    {
       "speciesId": "chandelure_shadow",
       "speciesName": "Chandelure (Shadow)",
       "dex": 609,
@@ -44723,6 +44750,14 @@
       "energy": 0,
       "cooldown": 1000
     },
+    "KOWTOW_CLEAVE": {
+      "moveId": "KOWTOW_CLEAVE",
+      "name": "Kowtow Cleave",
+      "type": "dark",
+      "power": 75,
+      "energy": 40,
+      "cooldown": 500
+    },
     "LAST_RESORT": {
       "moveId": "LAST_RESORT",
       "name": "Last Resort",
@@ -45049,6 +45084,14 @@
       "type": "ghost",
       "power": 45,
       "energy": 45,
+      "cooldown": 500
+    },
+    "OMINOUS_WIND_PLUS": {
+      "moveId": "OMINOUS_WIND_PLUS",
+      "name": "Ominous Wind+",
+      "type": "ghost",
+      "power": 50,
+      "energy": 40,
       "cooldown": 500
     },
     "ORIGIN_PULSE": {
