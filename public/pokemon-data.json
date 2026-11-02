@@ -29665,7 +29665,7 @@
       ],
       "baseStats": {
         "atk": 335,
-        "def": 182,
+        "def": 227,
         "hp": 155
       },
       "fastMoves": [
@@ -45043,6 +45043,14 @@
       "name": "Night Shade",
       "type": "ghost",
       "power": 70,
+      "energy": 45,
+      "cooldown": 500
+    },
+    "NIGHT_SHADE_PLUS": {
+      "moveId": "NIGHT_SHADE_PLUS",
+      "name": "Night Shade+",
+      "type": "ghost",
+      "power": 55,
       "energy": 45,
       "cooldown": 500
     },
