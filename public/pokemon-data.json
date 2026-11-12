@@ -2254,6 +2254,35 @@
       ]
     },
     {
+      "speciesId": "clefable_mega",
+      "speciesName": "Clefable (Mega)",
+      "dex": 36,
+      "types": [
+        "fairy",
+        "none"
+      ],
+      "baseStats": {
+        "atk": 253,
+        "def": 205,
+        "hp": 216
+      },
+      "fastMoves": [
+        "CHARGE_BEAM",
+        "POUND",
+        "ZEN_HEADBUTT",
+        "CHARM",
+        "FAIRY_WIND"
+      ],
+      "chargedMoves": [
+        "DAZZLING_GLEAM",
+        "METEOR_MASH",
+        "MOONBLAST",
+        "PSYCHIC",
+        "SWIFT",
+        "DRAINING_KISS"
+      ]
+    },
+    {
       "speciesId": "vulpix",
       "speciesName": "Vulpix",
       "dex": 37,
@@ -44974,6 +45003,14 @@
       "energy": 50,
       "cooldown": 500
     },
+    "MOONBLAST_PLUS": {
+      "moveId": "MOONBLAST_PLUS",
+      "name": "Moonblast+",
+      "type": "fairy",
+      "power": 80,
+      "energy": 50,
+      "cooldown": 500
+    },
     "MOONGEIST_BEAM": {
       "moveId": "MOONGEIST_BEAM",
       "name": "Moongeist Beam",
@@ -45685,6 +45722,14 @@
       "power": 65,
       "energy": 35,
       "cooldown": 500
+    },
+    "SOAK": {
+      "moveId": "SOAK",
+      "name": "Soak",
+      "type": "water",
+      "power": 6,
+      "energy": 0,
+      "cooldown": 1000
     },
     "SOLAR_BEAM": {
       "moveId": "SOLAR_BEAM",
