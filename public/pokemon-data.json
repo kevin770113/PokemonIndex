@@ -23133,7 +23133,8 @@
         "FLASH_CANNON",
         "WILD_CHARGE",
         "ZAP_CANNON",
-        "MIRROR_SHOT"
+        "MIRROR_SHOT",
+        "MAGNET_BOMB"
       ]
     },
     {
@@ -23159,7 +23160,8 @@
         "FLASH_CANNON",
         "WILD_CHARGE",
         "ZAP_CANNON",
-        "MIRROR_SHOT"
+        "MIRROR_SHOT",
+        "MAGNET_BOMB"
       ]
     },
     {
